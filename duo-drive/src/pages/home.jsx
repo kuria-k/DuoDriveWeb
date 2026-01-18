@@ -4,6 +4,7 @@ import Footer from "../components/footer";
 import SearchBar from "../components/searchbar";
 import CarCard from "../components/carcard";
 import Testimonial from "../components/testimonials";
+import wagon from "../assets/Gwagon.jpg"
 
 const Home = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -19,42 +20,42 @@ const Home = () => {
       <Navbar />
 
       {/* ================= HERO ================= */}
-      <section className="relative h-screen overflow-hidden bg-black text-white">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "url(/assets/hero-car.jpg)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            transform: `scale(${1 + scrollY * 0.00025})`,
-            filter: "brightness(0.45)"
-          }}
-        />
+     <section className="relative h-screen overflow-hidden bg-black text-white">
+  {/* Background Image */}
+  <div
+    className="absolute inset-0 transition-transform duration-700 ease-out"
+    style={{
+      backgroundImage: `url(${wagon})`, // G-Wagon background
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      transform: `scale(${1 + scrollY * 0.0005})`,
+      filter: "brightness(0.5) contrast(1.2)"
+    }}
+  />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#1f7a63]/40" />
+  {/* Gradient Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-[#2fa88a]/50 mix-blend-multiply" />
 
-        {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto h-full flex flex-col justify-center px-6">
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-            Drive Your Dream
-            <br />
-            <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent">
-              With Duo Drive Kenya
-            </span>
-          </h1>
+  {/* Content */}
+  <div className="relative z-10 max-w-6xl mx-auto h-full flex flex-col justify-center px-6">
+    <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 animate-fadeIn">
+      Drive Your Dream
+      <br />
+      <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent animate-gradient">
+        With Duo Drive Kenya
+      </span>
+    </h1>
 
-          <p className="text-lg md:text-xl text-gray-200 max-w-2xl mb-10">
-            Premium new & used vehicles. Trusted imports. Flexible financing
-            across Kenya.
-          </p>
+    <p className="text-lg md:text-xl text-gray-200 max-w-2xl mb-10 animate-slideUp">
+      Premium new & used vehicles. Trusted imports. Flexible financing across Kenya.
+    </p>
 
-          <div className="backdrop-blur-xl bg-white/90 rounded-2xl shadow-2xl p-4 max-w-4xl">
-            <SearchBar />
-          </div>
-        </div>
-      </section>
+    <div className="backdrop-blur-xl bg-white/90 rounded-2xl shadow-2xl p-4 max-w-4xl animate-pop">
+      <SearchBar />
+    </div>
+  </div>
+</section>
+
 
       {/* ================= TRUST ================= */}
       <section className="py-20 bg-white">

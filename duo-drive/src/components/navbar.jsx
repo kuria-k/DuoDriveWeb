@@ -82,10 +82,10 @@ const Navbar = () => {
 
         {/* CTA (desktop only) */}
         <Link
-          to="/inventory"
+          to="/login"
           className="hidden md:inline-block bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] px-6 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
-          View Cars
+          Login
         </Link>
       </div>
 
@@ -103,11 +103,11 @@ const Navbar = () => {
             </Link>
           ))}
           <Link
-            to="/inventory"
+            to="/login"
             className="block bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] px-6 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center"
             onClick={() => setMenuOpen(false)}
           >
-            View Cars
+            Login
           </Link>
         </div>
       )}

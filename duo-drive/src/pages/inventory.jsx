@@ -3,6 +3,7 @@ import CarCard from "../components/carcard";
 import Footer from "../components/footer";
 import { useState } from "react";
 import { AiOutlineMessage } from "react-icons/ai";
+import financing from "../assets/finacing.png";
 
 const cars = [
   { id: 1, make: "Toyota", price: "$20,000", fuel: "Petrol" },
@@ -23,7 +24,7 @@ const FilterSelect = ({ label, options }) => (
 );
 
 const Inventory = () => {
-  // ✅ Move state inside component
+  // Move state inside component
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     budget: "",
@@ -50,28 +51,77 @@ const Inventory = () => {
         <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10">
           {/* FILTERS */}
           <aside className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 relative">
-            <h3 className="font-bold text-xl mb-6 text-gray-800">Filter Cars</h3>
-            <FilterSelect label="Make" options={["Toyota", "Honda", "BMW", "Mercedes"]} />
-            <FilterSelect label="Price Range" options={["<$20k", "$20k-$30k", "$30k-$40k", ">$40k"]} />
-            <FilterSelect label="Fuel Type" options={["Petrol", "Diesel", "Hybrid", "Electric"]} />
+            <h3 className="font-bold text-xl mb-6 text-gray-800">
+              Filter Cars
+            </h3>
+            <FilterSelect
+              label="Make"
+              options={["Toyota", "Honda", "BMW", "Mercedes"]}
+            />
+            <FilterSelect
+              label="Price Range"
+              options={["<$20k", "$20k-$30k", "$30k-$40k", ">$40k"]}
+            />
+            <FilterSelect
+              label="Fuel Type"
+              options={["Petrol", "Diesel", "Hybrid", "Electric"]}
+            />
             <button className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-400 text-white py-2 rounded-lg font-semibold shadow hover:scale-105 transition">
               Apply Filters
-            </button> <br /> <br />
-
+            </button>{" "}
+            <br /> <br />
             {/* Chat Icon */}
-<button
-  onClick={() => setOpen(true)}
-  className="absolute mt-[24px] right-4 flex items-center gap-2 px-4 py-2 
+            <button
+              onClick={() => setOpen(true)}
+              className="absolute mt-[24px] right-4 flex items-center gap-2 px-4 py-2 
              rounded-full bg-gradient-to-r from-[#238b6f] to-[#2fa88a] 
              text-white shadow-lg hover:shadow-xl hover:scale-105 
              transition-all duration-300"
-  aria-label="AI Recommendation"
->
-  <AiOutlineMessage className="w-5 h-5 animate-pulse" />
-  <span className="text-sm font-semibold tracking-wide">Duo Drive AI</span>
-</button>
+              aria-label="AI Recommendation"
+            >
+              <AiOutlineMessage className="w-5 h-5 animate-pulse" />
+              <span className="text-sm font-semibold tracking-wide">
+                Duo Drive AI
+              </span>
+            </button>
+            <div className="mt-40 relative group">
+              {/* Glow background */}
+              <div
+                className="absolute -inset-1 rounded-2xl 
+    bg-gradient-to-r from-emerald-900 via-teal-900 to-cyan-900 
+    opacity-40 blur-xl group-hover:opacity-70 transition duration-500"
+              ></div>
 
-            
+              {/* Image Card */}
+              <div className="relative overflow-hidden rounded-2xl shadow-sm">
+                <img
+                  src={financing}
+                  alt="Vehicle Financing"
+                  className="
+        w-full object-cover
+        brightness-110 contrast-110 saturate-125
+        group-hover:brightness-125 group-hover:saturate-150
+        transition-all duration-500
+      "
+                />
+
+                {/* Gradient overlay */}
+                <div
+                  className="
+      absolute inset-0
+      bg-gradient-to-t from-black/40 via-transparent to-transparent
+    "
+                />
+
+                {/* Optional label */}
+                <div className="absolute bottom-4 left-4 text-white">
+                  {/* <p className="text-sm uppercase tracking-wide text-white bg-">
+        Easy Financing
+      </p> */}
+                  <h4 className="font-bold text-lg">Drive Today, Pay Later</h4>
+                </div>
+              </div>
+            </div>
           </aside>
 
           {/* LISTINGS */}
@@ -125,7 +175,9 @@ const Inventory = () => {
 
               {/* Fuel Preference */}
               <div>
-                <label className="block mb-2 font-medium">Fuel Preference</label>
+                <label className="block mb-2 font-medium">
+                  Fuel Preference
+                </label>
                 <select
                   name="fuel"
                   value={formData.fuel}
@@ -164,4 +216,3 @@ const Inventory = () => {
 };
 
 export default Inventory;
-
