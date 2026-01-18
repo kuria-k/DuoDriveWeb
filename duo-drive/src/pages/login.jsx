@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FaCar, FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/navbar";
+import Footer from "../components/footer";
 
 const AuthForm = () => {
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const AuthForm = () => {
       return;
     }
 
-    if (formData.email === "kelvin@admin.com" && formData.password === "123456") {
+    if (formData.email === "kelvin@admin.com" && formData.password === "@Kelvin_2026") {
       setLoading(true);
       showToast("Engine started… Driving to Admin Dashboard");
 
@@ -49,6 +51,8 @@ const AuthForm = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_#1b2f2a_0%,_#0e1c18_40%,_#020807_100%)] p-4">
       {/* Inline animation */}
       <style>{`
@@ -166,6 +170,8 @@ const AuthForm = () => {
         </p>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 
