@@ -9,6 +9,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaSignOutAlt,
+  FaMoneyCheckAlt,
 } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 
@@ -24,6 +25,8 @@ const Sidebar = () => {
     { name: "Inventory", icon: FaCar, link: "/admin/inventory" },
     { name: "Users", icon: FaUsers, link: "/admin/users" },
     { name: "Sales", icon: FaMoneyBillWave, link: "/admin/sales" },
+    { name: "Expenses", icon: FaMoneyCheckAlt, link: "/admin/expenses" },
+
   ];
 
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FaCar, FaUser, FaLock, FaEnvelope } from "react-icons/fa";
+// import { FaCar, FaUser, FaLock, FaEnvelope } from "react-icons/fa";
+import { Mail, Lock, User, Car, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
@@ -17,7 +18,7 @@ const AuthForm = () => {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const handleChange = (e) =>
@@ -36,7 +37,10 @@ const AuthForm = () => {
       return;
     }
 
-    if (formData.email === "kelvin@admin.com" && formData.password === "@Kelvin_2026") {
+    if (
+      formData.email === "kelvin@admin.com" &&
+      formData.password === "123456"
+    ) {
       setLoading(true);
       showToast("Engine started… Driving to Admin Dashboard");
 
@@ -52,125 +56,197 @@ const AuthForm = () => {
 
   return (
     <>
-    <Navbar/>
-    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_#1b2f2a_0%,_#0e1c18_40%,_#020807_100%)] p-4">
-      {/* Inline animation */}
-      <style>{`
-        @keyframes carMove {
-          0% { left: -30px; }
-          100% { left: calc(100% + 30px); }
-        }
-      `}</style>
-
-      {/* Toast */}
-      {toast && (
-        <div
-          className={`fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white font-semibold shadow-2xl z-50
-          ${toast.type === "error" ? "bg-red-600" : "bg-gradient-to-r from-emerald-500 to-teal-600"}`}
-        >
-          {toast.message}
-        </div>
-      )}
-
-      {/* Card */}
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,.6)] p-8 text-white">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_40px_rgba(47,168,138,.7)]">
-            <FaCar className="text-4xl" />
-          </div>
-        </div>
-
-        <h1 className="text-3xl font-extrabold text-center mb-1">
-          {isLogin ? "Welcome Back" : "Join the Drive"}
-        </h1>
-        <p className="text-center text-white/70 mb-6">
-          {isLogin
-            ? "Manage your premium car sales"
-            : "Create your dealer account"}
-        </p>
-
-        {isLogin && (
-          <div className="mb-6 text-xs text-center bg-white/10 py-2 rounded-lg">
-            Demo: <strong>kelvin@admin.com / 123456</strong>
+      <Navbar />
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        {/* Toast Notification */}
+        {toast && (
+          <div
+            className={`fixed top-6 right-6 px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 z-50 ${
+              toast.type === "success"
+                ? "bg-emerald-600 text-white"
+                : "bg-red-500 text-white"
+            }`}
+          >
+            <CheckCircle className="w-5 h-5" />
+            <span className="font-medium">{toast.message}</span>
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <Input
-              icon={<FaUser />}
-              placeholder="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
+        {/* Auth Card */}
+        <div className="w-full max-w-md">
+          {/* Logo & Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-600 rounded-2xl mb-4 shadow-lg">
+              <Car className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {isLogin ? "Welcome Back" : "Join the Drive"}
+            </h1>
+            <p className="text-gray-500">
+              {isLogin
+                ? "Manage your premium car sales"
+                : "Create your dealer account"}
+            </p>
+          </div>
+
+          {/* Demo Credentials */}
+          {isLogin && (
+            <div className="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-600 rounded-lg">
+              <p className="text-sm text-emerald-800">
+                <span className="font-semibold">Demo:</span> kelvin@admin.com /
+                123456
+              </p>
+            </div>
           )}
 
-          <Input
-            icon={<FaEnvelope />}
-            placeholder="Email Address"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          {/* Form Card */}
+          <div className="bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-8">
+            <div className="space-y-5">
+              {/* Name Field */}
+              {!isLogin && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="Full Name"
+                      className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+              )}
 
-          <Input
-            icon={<FaLock />}
-            placeholder="Password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-
-          {!isLogin && (
-            <Input
-              icon={<FaLock />}
-              placeholder="Confirm Password"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-          )}
-
-          {/* Button */}
-          <button
-            disabled={loading}
-            className="relative w-full h-14 rounded-2xl font-bold text-lg overflow-hidden
-              bg-gradient-to-r from-emerald-500 to-teal-600
-              shadow-[0_15px_40px_rgba(47,168,138,.5)]
-              hover:brightness-110 transition disabled:opacity-80"
-          >
-            {!loading ? (
-              isLogin ? "Login" : "Create Account"
-            ) : (
-              <div className="relative w-full h-full">
-                <FaCar
-                  className="absolute top-1/2 -translate-y-1/2 text-2xl text-white"
-                  style={{ animation: "carMove 1.1s linear infinite" }}
-                />
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                  />
+                </div>
               </div>
-            )}
-          </button>
-        </form>
 
-        {/* Switch */}
-        <p className="mt-6 text-center text-sm text-white/80">
-          {isLogin ? "New dealer?" : "Already have an account?"}{" "}
-          <span
-            onClick={() => !loading && setIsLogin(!isLogin)}
-            className="text-emerald-400 font-bold cursor-pointer hover:underline"
-          >
-            {isLogin ? "Create account" : "Login"}
-          </span>
-        </p>
+              {/* Password Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Password"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Confirm Password Field */}
+              {!isLogin && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm Password"
+                      className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-emerald-600 focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed mt-6"
+              >
+                {loading ? (
+                  <div className="relative h-10 w-full overflow-hidden">
+                    {/* Car + text */}
+                    <div className="absolute top-1/2 left-0 flex items-center animate-driveOnce">
+                      {/* Loading text */}
+                      <div className="mr-3 flex flex-col text-left leading-none">
+                        <span className="text-xs font-semibold text-white opacity-80">
+                          loading
+                        </span>
+                        <span className="text-xs font-semibold text-white opacity-50">
+                          loading
+                        </span>
+                      </div>
+
+                      {/* Car */}
+                      <Car className="w-8 h-8 text-white" />
+                    </div>
+
+                    {/* LOCAL animation styles */}
+                    <style>{`
+      @keyframes driveOnce {
+        0% {
+          opacity: 0;
+          transform: translateX(-40%) translateY(-50%) scale(0.95);
+        }
+        15% {
+          opacity: 1;
+          transform: translateX(-10%) translateY(-50%) scale(1);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(340%) translateY(-50%) scale(1);
+        }
+      }
+
+      .animate-driveOnce {
+        animation: driveOnce 2.2s ease-in forwards;
+      }
+    `}</style>
+                  </div>
+                ) : isLogin ? (
+                  "Login"
+                ) : (
+                  "Create Account"
+                )}
+              </button>
+            </div>
+
+            {/* Toggle Login/Signup */}
+            <div className="mt-6 text-center text-gray-600">
+              <span>{isLogin ? "New Here?" : "Already have an account?"}</span>{" "}
+              <button
+                onClick={() => !loading && setIsLogin(!isLogin)}
+                disabled={loading}
+                className="text-emerald-600 font-bold hover:text-emerald-700 hover:underline disabled:opacity-50"
+              >
+                {isLogin ? "Create account" : "Login"}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 };
