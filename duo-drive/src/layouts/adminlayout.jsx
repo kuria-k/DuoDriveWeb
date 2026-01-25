@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import AdminSidebar from "../components/adminsidebar";
+import Sidebar from "../components/adminsidebar"; // use the new Sidebar
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     // Check authentication
@@ -20,7 +21,7 @@ const AdminLayout = () => {
         // Clear session
         localStorage.removeItem("role");
         setShowModal(true);
-      }, 1000 * 600 * 1); // 1 minute inactivity
+      }, 1000 * 660); // 1 minute inactivity
     };
 
     window.addEventListener("mousemove", resetTimer);
@@ -43,11 +44,19 @@ const AdminLayout = () => {
 
   return (
     <div className="flex">
-      <AdminSidebar />
-      <div className="ml-0 w-full">
+      {/* Sidebar fixed on the left */}
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+
+      {/* Content area shifts depending on sidebar width */}
+      <div
+        className={`transition-all duration-300 ${
+          collapsed ? "ml-20" : "ml-64"
+        } w-full`}
+      >
         <Outlet />
       </div>
 
+      {/* Session timeout modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
           <div className="relative w-full max-w-md p-8 rounded-2xl shadow-2xl bg-white text-center">
@@ -74,4 +83,3 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
-

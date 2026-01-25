@@ -15,6 +15,7 @@ import Inventori from "../pages/admin/inventori";
 import Sales from "../pages/admin/sales";
 import Users from "../pages/admin/users";
 import Expenses from "../pages/admin/expenses";
+import Leads from "../pages/admin/leads";
 
 
 const AppRoutes = () => {
@@ -36,6 +37,7 @@ const AppRoutes = () => {
         <Route path="users" element={<Users />} />
         <Route path="sales" element={<Sales />} />
         <Route path="expenses" element={<Expenses />} />
+         <Route path="leads" element={<Leads />} />
       </Route>
 
       {/* DYNAMIC CAR PAGE */}
