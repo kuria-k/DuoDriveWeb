@@ -7,11 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node src/utils/ws-server.js"
   },
   "dependencies": {
     "axios": "^1.13.2",
     "file-saver": "^2.0.5",
+    "flowbite-react": "^0.12.16",
+    "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^0.562.0",
@@ -22,6 +25,7 @@
     "react-toastify": "^11.0.5",
     "recharts": "^3.6.0",
     "styled-components": "^6.3.2",
+    "ws": "^8.19.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

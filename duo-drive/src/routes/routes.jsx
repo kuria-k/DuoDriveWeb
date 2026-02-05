@@ -16,6 +16,16 @@ import Sales from "../pages/admin/sales";
 import Users from "../pages/admin/users";
 import Expenses from "../pages/admin/expenses";
 import Leads from "../pages/admin/leads";
+import BuyerDashboard from "../pages/buyer/dashboard2";
+import Favourite from "../pages/buyer/favourites";
+import History from "../pages/buyer/history";
+import BuyerInventory from "../pages/buyer/inventoryy";
+import Profile from "../pages/buyer/profile";
+import Details from "../pages/buyer/details";
+import BuyerLayout from "../layouts/buyerlayout";
+import Tips from "../pages/buyer/tips&guides";
+import BuyerContact from "../pages/buyer/contact";
+
 
 
 const AppRoutes = () => {
@@ -29,7 +39,9 @@ const AppRoutes = () => {
       <Route path="/financing" element={<Financing />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/cardetails/:id" element={<CarDetail />} />
       <Route path="/faq" element={<FAQ />} />
+
       {/* Admin routes */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
@@ -37,8 +49,23 @@ const AppRoutes = () => {
         <Route path="users" element={<Users />} />
         <Route path="sales" element={<Sales />} />
         <Route path="expenses" element={<Expenses />} />
-         <Route path="leads" element={<Leads />} />
+        <Route path="leads" element={<Leads />} />
       </Route>
+
+      {/* Buyer routes */}
+      <Route path="/buyer" element={<BuyerLayout />}>
+        <Route path="dashboard" element={<BuyerDashboard />} />
+        <Route path="inventory" element={<BuyerInventory />} />
+        <Route path="favourites" element={<Favourite />} />
+        <Route path="history" element={<History />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="details/:id" element={<Details />} />
+        <Route path="tips" element={<Tips />} />
+        <Route path="contact" element={<BuyerContact />} />
+        
+      </Route>
+
+
 
       {/* DYNAMIC CAR PAGE */}
       <Route path="/car/:id" element={<CarDetail />} />

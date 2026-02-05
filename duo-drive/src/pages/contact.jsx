@@ -367,9 +367,12 @@ const Contact = () => {
           <p className="text-xl text-gray-400 mb-10">
             Check out our FAQ page for quick answers to common questions
           </p>
-          <button className="px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-lg transition-all duration-300 shadow-xl">
+          <a
+            href="/faq"
+            className="px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-lg transition-all duration-300 shadow-xl"
+          >
             View FAQ
-          </button>
+          </a>
         </div>
       </section>
       <Footer />

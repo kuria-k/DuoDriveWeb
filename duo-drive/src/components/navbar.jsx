@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+// import Logo from "../assets/logo-2.png";
+import Logo from "../assets/logo.png";
 
 const navLinks = [
   { path: "/", label: "Home" },
@@ -8,7 +10,7 @@ const navLinks = [
   { path: "/about", label: "About" },
   { path: "/blog", label: "Blog" },
   { path: "/contact", label: "Contact" },
-  { path: "/faq", label: "FAQs"},
+  { path: "/faq", label: "FAQs" },
 ];
 
 const Navbar = () => {
@@ -29,12 +31,17 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* LOGO */}
-        <div className="text-2xl md:text-3xl font-extrabold tracking-tight">
-          <span className="text-white">Duo</span>
+        <div className="flex items-center text-2xl md:text-3xl font-extrabold tracking-tight">
+          <img
+            src={Logo}
+            alt="Duo Drive Kenya logo"
+            className="h-15 w-20  rounded-2xl"
+          />
+          {/* <span className="text-white">Duo</span>
           <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent">
             Drive
-          </span>{" "}
-          <span className="text-white">Kenya</span>
+          </span>
+          <span className="text-white">Kenya</span> */}
         </div>
 
         {/* Hamburger (mobile only) */}

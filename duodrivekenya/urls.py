@@ -25,5 +25,11 @@ urlpatterns = [
      path('api/', include('contactform.urls')),
      path('api/', include('sales.urls')),   
      path("api/", include("inventory.urls")),
+     path('api/', include('chats.urls')), 
+     path("api/users/", include("users.urls")),
+     path("api/", include("favourites.urls")),
+     path("api/", include("filters.urls")),
 
 ]
+
+

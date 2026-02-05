@@ -10,6 +10,18 @@ const api = axios.create({
   },
 });
 
+// Add an interceptor to attach the token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    // Use "Token" prefix for DRF TokenAuthentication
+    config.headers.Authorization = `Token ${token}`;
+  }
+  return config;
+});
+
+
+
 // Expenses API helpers
 export const getExpenses = () => {
   return api.get(`/expenses/`);
@@ -166,3 +178,117 @@ export const updateCarWithImages = async (
 export const deleteCar = (id) => {
   return api.delete(`/cars/${id}/`);
 };
+
+
+// Create a new user account (e.g., buyer signup)
+export const createUser = async (userData) => {
+  try {
+    const response = await api.post("/users/register/", {
+      username: userData.username,
+      email: userData.email,
+      password: userData.password,
+      phone_number: userData.phone_number,
+      name: userData.name,
+    });
+    return response.data; // { id, username, email, role }
+  } catch (err) {
+    console.error("Failed to create user:", err.response?.data || err);
+    throw err;
+  }
+};
+
+
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post("/users/login/", {
+      username: credentials.username,
+      password: credentials.password,
+    });
+    // Expected payload: { id, username, email, role, is_superuser }
+    return response.data;
+  } catch (err) {
+    console.error("Login failed:", err.response?.data || err);
+    throw err;
+  }
+};
+
+
+// Fetch all users (admin only)
+export const getUsers = async () => {
+  try {
+    const response = await api.get("/users/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch users:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Fetch single user
+export const getUserById = async (id) => {
+  try {
+    const response = await api.get(`/users/${id}/`);
+    return response.data;
+  } catch (err) {
+    console.error(`Failed to fetch user ${id}:`, err.response?.data || err);
+    throw err;
+  }
+};
+
+export const getMyProfile = async () => {
+  const token = localStorage.getItem("authToken");
+  const response = await api.get("/users/me/", {
+    headers: { Authorization: `Token ${token}` },
+  });
+  return response.data;
+};
+
+
+
+
+// Send a message
+export const sendMessage = async (data) => {
+  try {
+    const response = await api.post("/chat/messages/create/", data);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to send message:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Get all messages
+export const getMessages = async () => {
+  try {
+    const response = await api.get("/chat/messages/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch messages:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Get messages for a specific user
+export const getMessagesByUser = async (userId) => {
+  try {
+    const response = await api.get(`/chat/messages/user/${userId}/`);
+    return response.data;
+  } catch (err) {
+    console.error(`Failed to fetch messages for user ${userId}:`, err.response?.data || err);
+    throw err;
+  }
+};
+
+
+// Favourites API helpers
+export const toggleFavourite = async (carId) => {
+  const response = await api.post("/favourites/toggle/", { carId });
+  return response.data;
+};
+
+export const getFavourites = async () => {
+  const response = await api.get("/favourites/");
+  return response.data.data;
+};
+
+

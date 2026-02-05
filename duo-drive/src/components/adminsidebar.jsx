@@ -254,6 +254,7 @@ import {
   FaSignOutAlt,
   FaBell,
   FaTimes,
+  FaRegCommentDots,
 } from "react-icons/fa";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
@@ -268,6 +269,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     { name: "Sales", icon: FaMoneyBillWave, link: "/admin/sales" },
     { name: "Expenses", icon: FaMoneyCheckAlt, link: "/admin/expenses" },
     { name: "Leads", icon: FaUserPlus, link: "/admin/leads" },
+   
+
   ];
 
   useEffect(() => {
@@ -402,12 +405,12 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                   <p className="text-sm font-semibold text-gray-800">
                     Admin User
                   </p>
-                  <p className="text-xs text-gray-500">admin@carsales.com</p>
+                  <p className="text-xs text-gray-500">admin</p>
                 </div>
-                <div className="relative">
+                {/* <div className="relative">
                   <FaBell className="text-gray-400" />
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full" />
-                </div>
+                </div> */}
               </>
             )}
           </div>

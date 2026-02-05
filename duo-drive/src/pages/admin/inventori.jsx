@@ -450,6 +450,9 @@ const Inventory = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [carToDelete, setCarToDelete] = useState(null);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const emptyForm = {
     model: "",
@@ -627,6 +630,28 @@ const Inventory = () => {
       minimumFractionDigits: 0,
     }).format(price);
 
+  // Filter cars based on search query
+  const filteredCars = cars.filter(
+    (car) =>
+      car.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car.year.toString().includes(searchQuery)
+  );
+
+  // Paginate filtered cars
+  const totalPages = Math.ceil(filteredCars.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCars = filteredCars.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Reset to page 1 when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
       {toast.show && (
@@ -647,7 +672,7 @@ const Inventory = () => {
           <div>
             <h1 className="text-5xl font-bold text-gray-900 mb-2">Inventory</h1>
             <p className="text-gray-600 text-lg">
-              {cars.length} vehicle{cars.length !== 1 ? "s" : ""} in stock
+              {filteredCars.length} vehicle{filteredCars.length !== 1 ? "s" : ""} found
             </p>
           </div>
           <button
@@ -667,6 +692,17 @@ const Inventory = () => {
           </button>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search by model, name, location, or year..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:border-[#2fa88a] focus:outline-none"
+          />
+        </div>
+
         <div className="bg-white rounded-3xl shadow-xl p-8">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -677,7 +713,7 @@ const Inventory = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {cars.map((car) => {
+              {paginatedCars.map((car) => {
                 const discount = Number(car.discount_percent) || 0;
                 const originalPrice = Number(car.price) || 0;
                 const discountedPrice = Number(car.final_price) || originalPrice;
@@ -757,7 +793,7 @@ const Inventory = () => {
                             {/* Discounted Price */}
                             <span className="mr-2">
                               {formatPrice(discountedPrice)}
-                            </span><br />
+                            </span> <br />
                             {/* Original Price - Struck Through */}
                             <span className="line-through text-gray-400 text-lg">
                               {formatPrice(originalPrice)}
@@ -826,6 +862,61 @@ const Inventory = () => {
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {filteredCars.length > 0 && (
+          <div className="mt-8 flex items-center justify-between">
+            <p className="text-gray-600">
+              Page {currentPage} of {totalPages} • Showing {paginatedCars.length} of{" "}
+              {filteredCars.length} vehicles
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.max(prev - 1, 1))
+                }
+                disabled={currentPage === 1}
+                className="px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: currentPage === 1 ? "#e5e7eb" : "#2fa88a",
+                  color: currentPage === 1 ? "#9ca3af" : "white",
+                }}
+              >
+                ← Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className="px-4 py-2 rounded-lg font-medium transition-all"
+                    style={{
+                      backgroundColor:
+                        currentPage === page ? "#2fa88a" : "#f3f4f6",
+                      color: currentPage === page ? "white" : "#374151",
+                    }}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor:
+                    currentPage === totalPages ? "#e5e7eb" : "#2fa88a",
+                  color: currentPage === totalPages ? "#9ca3af" : "white",
+                }}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {showDeleteModal && carToDelete && (

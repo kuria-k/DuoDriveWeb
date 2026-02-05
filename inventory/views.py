@@ -132,11 +132,13 @@ from django.db import transaction
 from cloudinary.uploader import upload as cloudinary_upload, destroy as cloudinary_destroy
 from .models import Car_stocks, CarImage_stocks
 from .serializers import CarSerializer
+from rest_framework.permissions import AllowAny
 
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car_stocks.objects.all().order_by("-created_at")
     serializer_class = CarSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
+    permission_classes = [AllowAny]
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):

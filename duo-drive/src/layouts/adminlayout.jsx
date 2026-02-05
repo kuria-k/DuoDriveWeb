@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import Sidebar from "../components/adminsidebar"; // use the new Sidebar
+import Sidebar from "../components/adminsidebar";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -8,11 +8,14 @@ const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    // Check authentication
-    const role = localStorage.getItem("role");
-    if (!role) {
-      navigate("/login");
-    }
+  const role = localStorage.getItem("role");
+  const isSuperuser = localStorage.getItem("isSuperuser");
+
+  if (role !== "admin" && isSuperuser !== "true") {
+    navigate("/login", { replace: true });
+  }
+
+
 
     let timeout;
     const resetTimer = () => {
@@ -20,8 +23,10 @@ const AdminLayout = () => {
       timeout = setTimeout(() => {
         // Clear session
         localStorage.removeItem("role");
+        localStorage.removeItem("isSuperuser");
+        localStorage.removeItem("authToken");
         setShowModal(true);
-      }, 1000 * 660); // 1 minute inactivity
+      }, 1000 * 13600 * 60); 
     };
 
     window.addEventListener("mousemove", resetTimer);
@@ -39,7 +44,7 @@ const AdminLayout = () => {
 
   const handleRedirect = () => {
     setShowModal(false);
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -83,3 +88,4 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
+
