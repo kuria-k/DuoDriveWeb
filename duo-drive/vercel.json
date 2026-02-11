@@ -1,26 +1,13 @@
 {
-  "builds": [
+  "rootDirectory": "duo-drive",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "rewrites": [
     {
-      "src": "duo-drive/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "duo-drive/dist",
-        "buildCommand": "npm run build",
-        "devCommand": "npm run dev"
-      }
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/duo-drive/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/duo-drive/index.html"
-    }
-  ],
-  "buildCommand": "cd duo-drive && npm install && npm run build",
-  "outputDirectory": "duo-drive/dist",
-  "installCommand": "cd duo-drive && npm install"
+  ]
 }
