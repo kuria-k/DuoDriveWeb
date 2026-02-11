@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-// import Navbar from "../../components/buyernavbar";
-import { useNavigate, useLocation } from "react-router-dom";
-import Footer from "../../components/footer";
-import { getCarById } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
+import { getCars, getCarById, toggleFavourite, getFavourites } from "../../utils/api";
 import {
   Heart,
-  Share2,
   ChevronLeft,
   ChevronRight,
   Calendar,
@@ -17,15 +14,15 @@ import {
   Zap,
   ArrowRight,
   TrendingUp,
-  Car,
+  Car as CarIcon,
   Phone,
   Mail,
-  Globe,
   Instagram,
   Facebook,
-  Twitter,
   Music,
+  Sparkles,
 } from "lucide-react";
+import { AiOutlineCar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 const CarDetail = () => {
   const navigate = useNavigate();
@@ -34,20 +31,106 @@ const CarDetail = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [favorite, setFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [recommendedCars, setRecommendedCars] = useState([]);
+  const [favourites, setFavourites] = useState([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
+  const userName = localStorage.getItem("userName") || "";
+  const userId = localStorage.getItem("userId") || "";
 
   useEffect(() => {
     const fetchCar = async () => {
       try {
         const res = await getCarById(id);
         setCar(res.data);
+        
+        // Fetch recommendations after getting the car
+        await fetchRecommendations(res.data);
       } catch (err) {
         console.error("Failed to load car", err);
       } finally {
         setLoading(false);
       }
     };
+    
+    const loadFavourites = async () => {
+      if (!userId) return;
+      try {
+        const favs = await getFavourites(userId);
+        setFavourites(favs.map((f) => f.car.id));
+      } catch (err) {
+        console.error("Favourites load failed:", err);
+        const saved = localStorage.getItem(`favourites_${userId}`);
+        if (saved) {
+          setFavourites(JSON.parse(saved));
+        }
+      }
+    };
+
     fetchCar();
-  }, [id]);
+    loadFavourites();
+  }, [id, userId]);
+
+  const fetchRecommendations = async (currentCar) => {
+    try {
+      setLoadingRecommendations(true);
+      const res = await getCars();
+      const allCars = Array.isArray(res.data) ? res.data : res.data?.results || [];
+      
+      const currentPrice = currentCar.final_price || currentCar.price;
+      const minPrice = currentPrice - 200000; // -200k
+      const maxPrice = currentPrice + 300000; // +300k
+      
+      // Filter cars within the price range (between minPrice and maxPrice), excluding the current car
+      const similar = allCars.filter(c => {
+        if (c.id === currentCar.id) return false;
+        const carPrice = c.final_price || c.price;
+        return carPrice >= minPrice && carPrice <= maxPrice;
+      });
+      
+      // Shuffle and take up to 4 cars
+      const shuffled = similar.sort(() => 0.5 - Math.random()).slice(0, 4);
+      setRecommendedCars(shuffled);
+    } catch (err) {
+      console.error("Failed to load recommendations", err);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  const handleToggleFavourite = async (carId) => {
+    setFavourites((prev) =>
+      prev.includes(carId)
+        ? prev.filter((id) => id !== carId)
+        : [...prev, carId]
+    );
+
+    if (userId) {
+      const updatedFavourites = favourites.includes(carId)
+        ? favourites.filter((id) => id !== carId)
+        : [...favourites, carId];
+      localStorage.setItem(`favourites_${userId}`, JSON.stringify(updatedFavourites));
+    }
+
+    try {
+      const result = await toggleFavourite(carId);
+      console.log(result.message);
+    } catch (err) {
+      console.error("Toggle favourite failed:", err);
+      setFavourites((prev) =>
+        prev.includes(carId)
+          ? prev.filter((id) => id !== carId)
+          : [...prev, carId]
+      );
+    }
+  };
+
+  const isNewCar = (createdAt) => {
+    if (!createdAt) return false;
+    const created = new Date(createdAt);
+    const now = new Date();
+    return (now - created) / (1000 * 60 * 60 * 24) <= 3;
+  };
 
   if (loading) {
     return (
@@ -85,9 +168,9 @@ const CarDetail = () => {
     },
     { icon: Fuel, label: "Fuel Type", value: car.fuel_type },
     { icon: Settings, label: "Transmission", value: car.transmission },
-    { icon: Car, label: "Drive Type", value: car.drive_type },
+    { icon: CarIcon, label: "Drive Type", value: car.drive_type },
     {
-      icon: Car,
+      icon: CarIcon,
       label: "Engine Capacity",
       value: car.engine_capacity_cc ? `${car.engine_capacity_cc} cc` : "N/A",
     },
@@ -147,7 +230,7 @@ const CarDetail = () => {
             <div className="absolute top-6 right-6 flex gap-3">
               <button
                 onClick={() => setFavorite(!favorite)}
-                className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center"
+                className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center hover:scale-110 transition"
               >
                 <Heart
                   className={
@@ -155,25 +238,22 @@ const CarDetail = () => {
                   }
                 />
               </button>
-              {/* <button className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center">
-                <Share2 />
-              </button> */}
             </div>
           </div>
 
           {/* Thumbnails */}
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mt-6 overflow-x-auto pb-2">
             {images.map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentImage(idx)}
-                className={`w-24 h-20 rounded-xl overflow-hidden border-2 ${
+                className={`w-24 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 ${
                   idx === currentImage
                     ? "border-[#2fa88a]"
-                    : "border-transparent opacity-60"
-                }`}
+                    : "border-transparent opacity-60 hover:opacity-100"
+                } transition`}
               >
-                <img src={img} className="w-full h-full object-cover" />
+                <img src={img} className="w-full h-full object-cover" alt={`Thumbnail ${idx + 1}`} />
               </button>
             ))}
           </div>
@@ -264,9 +344,9 @@ const CarDetail = () => {
                   onClick={() =>
                     navigate("/buyer/contact", {
                       state: {
-                        subject_type: "Financing", // This maps to your Contact form select
+                        subject_type: "Financing",
                         message:
-                          "I am interested in financing options. Please provide more details.", // Pre-filled message
+                          "I am interested in financing options. Please provide more details.",
                       },
                     })
                   }
@@ -277,28 +357,26 @@ const CarDetail = () => {
 
                 {/* Contact Info */}
                 <div className="border-t mt-6 pt-6 space-y-4">
-                  <div className="border-t mt-6 pt-6 space-y-4">
-                    {/* Phone */}
-                    <div className="flex items-center gap-4">
-                      <Phone className="w-5 h-5 text-[#2fa88a]" />
-                      <span className="font-semibold">+254 706 19 39 59</span>
-                    </div>
+                  {/* Phone */}
+                  <div className="flex items-center gap-4">
+                    <Phone className="w-5 h-5 text-[#2fa88a]" />
+                    <span className="font-semibold">+254 706 19 39 59</span>
+                  </div>
 
-                    {/* Email */}
-                    <div className="flex items-center gap-4">
-                      <Mail className="w-5 h-5 text-[#2fa88a]" />
-                      <span className="font-semibold">
-                        duodrivekenya@gmail.com
-                      </span>
-                    </div>
+                  {/* Email */}
+                  <div className="flex items-center gap-4">
+                    <Mail className="w-5 h-5 text-[#2fa88a]" />
+                    <span className="font-semibold">
+                      duodrivekenya@gmail.com
+                    </span>
+                  </div>
 
-                    {/* Socials */}
-                    <div className="flex items-center gap-4">
-                      <Facebook className="w-5 h-5 text-[#2fa88a]" />
-                      <Instagram className="w-5 h-5 text-[#2fa88a]" />
-                      <Music className="w-5 h-5 text-[#2fa88a]" />
-                      <span className="font-semibold">duo_drive.ke</span>
-                    </div>
+                  {/* Socials */}
+                  <div className="flex items-center gap-4">
+                    <Facebook className="w-5 h-5 text-[#2fa88a]" />
+                    <Instagram className="w-5 h-5 text-[#2fa88a]" />
+                    <Music className="w-5 h-5 text-[#2fa88a]" />
+                    <span className="font-semibold">duo_drive.ke</span>
                   </div>
                 </div>
               </div>
@@ -307,7 +385,161 @@ const CarDetail = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* RECOMMENDATIONS SECTION */}
+      {recommendedCars.length > 0 && (
+        <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20">
+          <div className="max-w-7xl mx-auto px-6">
+            {/* Section Header */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-[#2fa88a]/10 px-6 py-3 rounded-full mb-4">
+                <Sparkles className="w-5 h-5 text-[#2fa88a]" />
+                <span className="text-[#2fa88a] font-semibold text-sm">
+                  Personalized For You
+                </span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                You Might Also Like
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Similar vehicles within your budget range — carefully selected just for you
+              </p>
+            </div>
+
+            {/* Loading State */}
+            {loadingRecommendations ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#2fa88a]" />
+              </div>
+            ) : (
+              /* Recommendations Grid */
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {recommendedCars.map((recCar) => (
+                  <div
+                    key={recCar.id}
+                    className="group relative bg-white rounded-2xl shadow-md hover:shadow-2xl 
+                    overflow-hidden border border-gray-100 hover:border-[#2fa88a]/30 
+                    transition-all duration-300 hover:-translate-y-2"
+                  >
+                    {/* NEW Badge */}
+                    {isNewCar(recCar.created_at) && (
+                      <div className="absolute top-4 left-4 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white text-xs px-3 py-1.5 rounded-full font-bold z-10 shadow-lg">
+                        NEW
+                      </div>
+                    )}
+
+                    {/* Discount Badge */}
+                    {recCar.discount_percent > 0 && (
+                      <div className="absolute top-4 right-16 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-3 py-1.5 rounded-full font-bold z-10 shadow-lg">
+                        {recCar.discount_percent}% OFF
+                      </div>
+                    )}
+
+                    {/* Favourite Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleFavourite(recCar.id);
+                      }}
+                      className="absolute top-4 right-4 z-20 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all"
+                    >
+                      {favourites.includes(recCar.id) ? (
+                        <AiFillHeart className="w-5 h-5 text-red-500" />
+                      ) : (
+                        <AiOutlineHeart className="w-5 h-5 text-gray-700 hover:text-red-500" />
+                      )}
+                    </button>
+
+                    {/* Image */}
+                    <div className="relative overflow-hidden bg-gray-100 aspect-[4/3]">
+                      {recCar?.images?.[0]?.url ? (
+                        <img
+                          src={recCar.images[0].url}
+                          alt={recCar.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <AiOutlineCar className="w-16 h-16 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col">
+                      <div className="mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#2fa88a] transition mb-2">
+                          {recCar.model} {recCar.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {recCar.fuel_type} • {recCar.year || "2024"} • {recCar.transmission || "Automatic"}
+                        </p>
+                      </div>
+
+                      {/* Price */}
+                      <div className="mb-5 pb-5 border-b border-gray-100">
+                        {recCar.discount_percent > 0 ? (
+                          <div>
+                            <p className="text-3xl font-bold text-[#2fa88a]">
+                              KES {Number(recCar.final_price ?? recCar.price).toLocaleString()}
+                            </p>
+                            <p className="text-sm text-gray-400 line-through mt-1">
+                              KES {Number(recCar.price).toLocaleString()}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-3xl font-bold text-[#2fa88a]">
+                            KES {Number(recCar.price ?? 0).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="space-y-3">
+                        {/* View Details */}
+                        <button
+                          onClick={() => {
+                            navigate(`/buyer/details/${recCar.id}`);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="w-full bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                        >
+                          View Details
+                        </button>
+
+                        {/* Book Test Drive */}
+                        <button
+                          onClick={() =>
+                            navigate("/buyer/contact", {
+                              state: {
+                                car: recCar,
+                              },
+                            })
+                          }
+                          className="w-full border-2 border-[#2fa88a] text-[#2fa88a] py-3 rounded-xl font-semibold hover:bg-[#2fa88a] hover:text-white transition-all duration-200"
+                        >
+                          Book Test Drive
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* View All Link */}
+            <div className="text-center mt-12">
+              <button
+                onClick={() => navigate("/buyer/inventory")}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white rounded-xl font-bold hover:shadow-xl hover:scale-105 transition-all"
+              >
+                Browse All Vehicles
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 };

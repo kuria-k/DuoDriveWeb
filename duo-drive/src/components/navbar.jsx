@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 // import Logo from "../assets/logo-2.png";
-import Logo from "../assets/logo.png";
+import Logo from "../assets/logoT.png";
+
 
 const navLinks = [
   { path: "/", label: "Home" },
   { path: "/inventory", label: "Inventory" },
-  { path: "/financing", label: "Financing" },
+  // { path: "/financing", label: "Financing" },
   { path: "/about", label: "About" },
   { path: "/blog", label: "Blog" },
   { path: "/contact", label: "Contact" },
@@ -31,18 +32,25 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* LOGO */}
-        <div className="flex items-center text-2xl md:text-3xl font-extrabold tracking-tight">
-          <img
-            src={Logo}
-            alt="Duo Drive Kenya logo"
-            className="h-15 w-20  rounded-2xl"
-          />
-          {/* <span className="text-white">Duo</span>
-          <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent">
-            Drive
-          </span>
-          <span className="text-white">Kenya</span> */}
-        </div>
+        <div className="flex items-center  space-x-3">
+   <img
+    src={Logo}
+    alt="Duo Drive Car Sellers logo"
+    className="
+      h-16 sm:h-18 md:h-20 lg:h-24
+      w-30
+      object-contain
+    "
+  />
+  {/* <span className="text-white text-2xl md:text-3xl font-extrabold tracking-tight">
+    Duo
+    <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent ml-1">
+      Drive
+    </span>
+    <span className="text-white ml-1">Kenya</span>
+  </span> */}
+</div>
+
 
         {/* Hamburger (mobile only) */}
         <button

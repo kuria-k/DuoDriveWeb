@@ -16,6 +16,7 @@ import Footer from "../components/footer";
 import Navbar from "../components/navbar";
 import adimg from "../assets/ad image.jpg";
 import { createContact } from "../utils/api";
+import { FaTiktok } from "react-icons/fa";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -93,10 +94,36 @@ const Contact = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, name: "Facebook", color: "hover:bg-blue-600" },
-    { icon: Twitter, name: "Twitter", color: "hover:bg-sky-500" },
-    { icon: Instagram, name: "Instagram", color: "hover:bg-pink-600" },
-    { icon: Linkedin, name: "LinkedIn", color: "hover:bg-blue-700" },
+    {
+      icon: Facebook,
+      name: "Facebook",
+      color: "hover:bg-blue-600",
+      href: "https://www.facebook.com/share/1745AEsjuQ/",
+    },
+    {
+      icon: Instagram,
+      name: "Instagram",
+      color: "hover:bg-pink-600",
+      href: "https://www.instagram.com/duo_drive.ke",
+    },
+    {
+      icon: FaTiktok,
+      name: "TikTok",
+      color: "hover:bg-black hover:text-white",
+      href: "https://www.tiktok.com/@duo_drive.ke",
+    },
+    // {
+    //   icon: Twitter,
+    //   name: "Twitter",
+    //   color: "hover:bg-sky-500",
+    //   href: "https://twitter.com/",
+    // },
+    // {
+    //   icon: Linkedin,
+    //   name: "LinkedIn",
+    //   color: "hover:bg-blue-700",
+    //   href: "https://linkedin.com/",
+    // },
   ];
 
   return (
@@ -333,28 +360,34 @@ const Contact = () => {
                   Chat with our team in real-time for instant answers to your
                   questions.
                 </p>
-                <button className="w-full py-4 bg-white text-emerald-600 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300">
+
+                <a
+                  href="https://wa.me/254706193959?text=hello%20there,%20i%20wanted%20to%20inquire%20about%20you%20car%20sales%20services"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center py-4 bg-white text-emerald-600 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300"
+                >
                   Start Live Chat
-                </button>
+                </a>
               </div>
 
               {/* Social Media */}
-              <div className="bg-white rounded-3xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  Follow Us
-                </h3>
-                <div className="grid grid-cols-4 gap-4">
-                  {socialLinks.map((social, idx) => (
-                    <a
-                      key={idx}
-                      href="#"
-                      className={`w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center hover:text-white transition-all duration-300 ${social.color}`}
-                    >
-                      <social.icon size={28} />
-                    </a>
-                  ))}
-                </div>
-              </div>
+               <div className="bg-white rounded-3xl p-8 shadow-lg">
+        <h3 className="text-2xl font-bold text-gray-900 mb-6">Follow Us</h3>
+        <div className="grid grid-cols-3 gap-4">
+          {socialLinks.map((social, idx) => (
+            <a
+              key={idx}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center hover:text-white transition-all duration-300 ${social.color}`}
+            >
+              <social.icon size={28} />
+            </a>
+          ))}
+        </div>
+      </div>
             </div>
           </div>
         </div>

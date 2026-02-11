@@ -273,18 +273,26 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
   ];
 
-  useEffect(() => {
-    const fetchPending = async () => {
+ useEffect(() => {
+  const fetchPending = async () => {
+    try {
       const res = await getContacts();
-      const pending = res.data.filter(
-        (l) => (l.status || "pending") === "pending",
+      // handle both cases: array directly or axios-style { data: [...] }
+      const contacts = Array.isArray(res) ? res : res.data || [];
+      const pending = contacts.filter(
+        (l) => (l.status || "pending") === "pending"
       ).length;
       setPendingLeads(pending);
-    };
-    fetchPending();
-    const interval = setInterval(fetchPending, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    } catch (err) {
+      console.error("Error fetching pending leads:", err);
+    }
+  };
+
+  fetchPending();
+  const interval = setInterval(fetchPending, 30000);
+  return () => clearInterval(interval);
+}, []);
+
 
   const navigate = useNavigate();
   const handleLogout = () => {

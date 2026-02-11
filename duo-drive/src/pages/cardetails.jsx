@@ -389,7 +389,7 @@ const CarDetail = () => {
             )}
 
             {/* Actions */}
-            <div className="absolute top-6 right-6 flex gap-3">
+            {/* <div className="absolute top-6 right-6 flex gap-3">
               <button
                 onClick={() => setFavorite(!favorite)}
                 className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center"
@@ -403,7 +403,7 @@ const CarDetail = () => {
               <button className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center">
                 <Share2 />
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Thumbnails */}
@@ -519,9 +519,9 @@ const CarDetail = () => {
                         d="M3 5h2l3.6 7.59-1.35 2.44A1 1 0 008 17h10a1 1 0 001-1v-1H9.42l.93-1.67h7.65a1 1 0 00.9-.55l3.58-6.49A1 1 0 0021 5H5.21l-.94-2H1"
                       />
                     </svg>
-                    <span className="font-semibold">+254 712 345 678</span>
+                    <span className="font-semibold">+254 706 193 959</span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  {/* <div className="flex items-center gap-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-5 h-5 text-[#2fa88a]"
@@ -537,7 +537,7 @@ const CarDetail = () => {
                       />
                     </svg>
                     <span className="font-semibold">sales@cardealer.co.ke</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

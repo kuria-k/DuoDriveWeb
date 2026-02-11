@@ -93,14 +93,15 @@ const Home = () => {
           {/* CTA Row */}
           <div className="mt-10 flex flex-col gap-4 sm:flex-row animate-pop">
             <a
-              href="/inventory"
-              className="group inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] px-8 py-4 text-base font-semibold text-white shadow-xl transition-all hover:scale-105 hover:shadow-2xl"
-            >
-              Browse Inventory
-              <span className="ml-2 transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </a>
+  href="/login"
+  className="group inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] px-8 py-4 text-base font-semibold text-white shadow-xl transition-all hover:scale-105 hover:shadow-2xl animate-bounce"
+>
+  Get Started Today
+  <span className="ml-2 transition-transform group-hover:translate-x-1 group-hover:animate-ping">
+    
+  </span>
+</a>
+
 
             <a
               href="/contact"
@@ -265,12 +266,12 @@ const Home = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-black px-10 py-4 rounded-xl font-semibold hover:bg-white hover:text-[#1f7a63] transition">
+          <a href="/inventory" className="bg-black px-10 py-4 rounded-xl font-semibold hover:bg-white hover:text-[#1f7a63] transition">
             Browse Inventory
-          </button>
-          <button className="bg-white text-[#1f7a63] px-10 py-4 rounded-xl font-semibold hover:bg-black hover:text-white transition">
+          </a>
+          <a href="/contact" className="bg-white text-[#1f7a63] px-10 py-4 rounded-xl font-semibold hover:bg-black hover:text-white transition">
             Book Test Drive
-          </button>
+          </a>
         </div>
       </section>
 

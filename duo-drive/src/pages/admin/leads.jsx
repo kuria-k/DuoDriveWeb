@@ -38,15 +38,18 @@ const LeadsPage = () => {
     fetchLeads();
   }, []);
 
-  const fetchLeads = async () => {
-    try {
-      const res = await getContacts();
-      setLeads(res.data.map(normalizeLead));
-    } catch (error) {
-      console.error("Error fetching leads:", error);
-      showToast("Failed to fetch leads", "error");
-    }
-  };
+ const fetchLeads = async () => {
+  try {
+    const res = await getContacts();
+    const contacts = Array.isArray(res) ? res : res.data || []; // handle both cases
+    setLeads(contacts.map(normalizeLead));
+  } catch (error) {
+    console.error("Error fetching leads:", error);
+    showToast("Failed to fetch leads", "error");
+  }
+};
+
+
 
   const showToast = (message, type) => {
     setToast({ show: true, message, type });

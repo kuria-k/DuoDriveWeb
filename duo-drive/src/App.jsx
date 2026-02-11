@@ -34,9 +34,26 @@
 
 // export default App
 
+// import { BrowserRouter } from "react-router-dom";
+// import AppRoutes from "./routes/routes";
+// import { AuthProvider } from "./context/authcontext";
+// <link rel="manifest" href="/manifest.json" />
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <AuthProvider>
+//         <AppRoutes />
+//       </AuthProvider>
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
+
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/routes";
-import { AuthProvider } from "./context/authcontext";
+import { AuthProvider } from "./context/AuthContext"; 
 
 function App() {
   return (
@@ -49,4 +66,6 @@ function App() {
 }
 
 export default App;
+
+
 

@@ -1,95 +1,6 @@
-// import { useState } from "react";
-// import Navbar from "../components/navbar";
-// import Footer from "../components/footer";
-
-// const Financing = () => {
-//   const [price, setPrice] = useState(20000);
-//   const [downPayment, setDownPayment] = useState(5000);
-//   const [interestRate, setInterestRate] = useState(12);
-//   const [years, setYears] = useState(3);
-
-//   const loanAmount = price - downPayment;
-//   const monthlyRate = interestRate / 100 / 12;
-//   const months = years * 12;
-//   const monthlyPayment =
-//     (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
-
-//   return (
-//     <div className="bg-gray-50 min-h-screen flex flex-col">
-//       <Navbar />
-
-//       {/* HERO */}
-//       <section className="py-24 bg-gradient-to-r from-[#2fa88a] to-[#1f7a63] text-white text-center">
-//         <div className="max-w-4xl mx-auto px-6">
-//           <h1 className="text-5xl font-extrabold mb-6 tracking-tight">
-//             Flexible Financing
-//           </h1>
-//           <p className="mb-10 text-lg leading-relaxed">
-//             We partner with leading Kenyan banks to offer flexible car financing
-//             solutions tailored to your needs.
-//           </p>
-//           <a href="/contact" className="bg-black px-10 py-4 rounded-lg font-semibold hover:bg-gray-800 hover:scale-105 transition-transform shadow-lg">
-//             Apply for Financing
-//           </a>
-//         </div>
-//       </section>
-
-//       {/* CALCULATOR */}
-//       <section className="flex-grow py-20">
-//         <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-10">
-//           <h2 className="text-3xl font-bold mb-10 text-gray-800 text-center">
-//             Financing Calculator
-//           </h2>
-
-//           <div className="grid md:grid-cols-2 gap-10">
-//             {/* Inputs */}
-//             <div className="space-y-6">
-//               {[
-//                 { label: "Car Price (KES)", value: price, setter: setPrice },
-//                 { label: "Down Payment (KES)", value: downPayment, setter: setDownPayment },
-//                 { label: "Interest Rate (%)", value: interestRate, setter: setInterestRate },
-//                 { label: "Loan Term (Years)", value: years, setter: setYears },
-//               ].map((field, idx) => (
-//                 <div key={idx}>
-//                   <label className="block font-medium mb-2 text-gray-700">
-//                     {field.label}
-//                   </label>
-//                   <input
-//                     type="number"
-//                     value={field.value}
-//                     onChange={(e) => field.setter(Number(e.target.value))}
-//                     className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
-//                   />
-//                 </div>
-//               ))}
-//             </div>
-
-//             {/* Results */}
-//             <div className="flex flex-col justify-center items-center bg-gray-100 rounded-xl p-8 shadow-inner">
-//               <h3 className="text-xl font-semibold mb-4 text-gray-700">
-//                 Estimated Monthly Payment
-//               </h3>
-//               <p className="text-5xl font-extrabold text-emerald-600">
-//                 KES {monthlyPayment.toFixed(0).toLocaleString()}
-//               </p>
-//               <p className="mt-3 text-gray-600 text-center">
-//                 Based on {years} years at {interestRate}% interest
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       <Footer />
-//     </div>
-//   );
-// };
-
-// export default Financing;
-
 import { useState, useEffect } from "react";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
+import Navbar from "../../components/buyernavbar";
+import Footer from "../../components/footer";
 import { Calculator, TrendingUp, ShieldCheck, Clock, DollarSign, Percent, Calendar, CreditCard, X, FileText, Building, User, FileSpreadsheet, Briefcase, Phone, ChevronRight } from "lucide-react";
 
 const Financing = () => {
@@ -194,7 +105,7 @@ const Financing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
-      <Navbar />
+      
 
       {/* Requirements Modal */}
       {showRequirements && (
@@ -723,7 +634,7 @@ const Financing = () => {
         </div>
       </section>
 
-      <Footer />
+     
     </div>
   );
 };

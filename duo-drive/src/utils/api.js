@@ -45,8 +45,17 @@ export const deleteExpense = (id) => {
 
 
 // Contact API helpers
-export const getContacts = () => {
-  return api.get("/contacts/");
+// export const getContacts = () => {
+//   return api.get("/contacts/");
+// };
+export const getContacts = async () => {
+  try {
+    const response = await api.get("/contacts/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch contacts:", err.response?.data || err);
+    throw err;
+  }
 };
 
 export const getContact = (id) => {
@@ -290,5 +299,100 @@ export const getFavourites = async () => {
   const response = await api.get("/favourites/");
   return response.data.data;
 };
+
+
+
+// Fetch recent filter history (5 most recent for logged-in user)
+export const getFilterHistory = async () => {
+  try {
+    const response = await api.get("/history/filters/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch filter history:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Save a new filter history entry
+export const createFilterHistory = async (filters) => {
+  try {
+    const response = await api.post("/history/filters/", { filters });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to save filter history:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Fetch a single filter history entry by ID
+export const getFilterHistoryById = async (id) => {
+  try {
+    const response = await api.get(`/history/filters/${id}/`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch filter history by ID:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Update a filter history entry by ID
+export const updateFilterHistory = async (id, filters) => {
+  try {
+    const response = await api.put(`/history/filters/${id}/`, { filters });
+    return response.data;
+  } catch (err) {
+    console.error("Failed to update filter history:", err.response?.data || err);
+    throw err;
+  }
+};
+
+// Delete a filter history entry by ID
+export const deleteFilterHistory = async (id) => {
+  try {
+    const response = await api.delete(`/history/filters/${id}/`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to delete filter history:", err.response?.data || err);
+    throw err;
+  }
+};
+
+export const saveSearchToHistory = (filters) => {
+  try {
+    const username = localStorage.getItem("userName");
+    if (!username) return;
+    
+    const userSearches = JSON.parse(localStorage.getItem(`userSearches_${username}`) || '[]');
+    
+    const newSearch = {
+      id: Date.now(), // Simple ID based on timestamp
+      filters,
+      created_at: new Date().toISOString(),
+      username
+    };
+    
+    userSearches.unshift(newSearch); // Add to beginning
+    const limitedSearches = userSearches.slice(0, 20); // Keep only 20 most recent
+    
+    localStorage.setItem(`userSearches_${username}`, JSON.stringify(limitedSearches));
+    return newSearch;
+  } catch (error) {
+    console.error("Error saving search to localStorage:", error);
+  }
+};
+
+export const getUserSearches = () => {
+  try {
+    const username = localStorage.getItem("userName");
+    if (!username) return [];
+    
+    const userSearches = JSON.parse(localStorage.getItem(`userSearches_${username}`) || '[]');
+    return userSearches;
+  } catch (error) {
+    console.error("Error getting user searches:", error);
+    return [];
+  }
+};
+
 
 

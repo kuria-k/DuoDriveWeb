@@ -25,6 +25,9 @@ import Details from "../pages/buyer/details";
 import BuyerLayout from "../layouts/buyerlayout";
 import Tips from "../pages/buyer/tips&guides";
 import BuyerContact from "../pages/buyer/contact";
+import BuyerFinancing from "../pages/buyer/financingg";
+import BuyerFaq from "../pages/buyer/faqq";
+
 
 
 
@@ -53,7 +56,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Buyer routes */}
-      <Route path="/buyer" element={<BuyerLayout />}>
+      <Route path="buyer" element={<BuyerLayout />}>
         <Route path="dashboard" element={<BuyerDashboard />} />
         <Route path="inventory" element={<BuyerInventory />} />
         <Route path="favourites" element={<Favourite />} />
@@ -62,7 +65,9 @@ const AppRoutes = () => {
         <Route path="details/:id" element={<Details />} />
         <Route path="tips" element={<Tips />} />
         <Route path="contact" element={<BuyerContact />} />
-        
+        <Route path="financing" element={<BuyerFinancing />} />
+        <Route path="faq" element={<BuyerFaq />} />
+
       </Route>
 
 

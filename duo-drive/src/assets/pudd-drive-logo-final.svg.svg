@@ -1,0 +1,28 @@
+<svg width="360" height="80" viewBox="0 0 360 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background (transparent) -->
+    <rect width="360" height="80" fill="none"/>
+    
+    <!-- PUDD - White bold -->
+    <text x="0" y="48" font-family="Inter, 'Arial Black', 'Helvetica Bold', 'Poppins', sans-serif" font-size="44" font-weight="900" fill="#FFFFFF" letter-spacing="-2.5">PUDD</text>
+    
+    <!-- DRIVE - Signature green gradient (Terava Motors style) -->
+    <defs>
+        <linearGradient id="driveGreenGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2fa88a"/>
+            <stop offset="100%" stop-color="#40c9a5"/>
+        </linearGradient>
+    </defs>
+    <text x="108" y="48" font-family="Inter, 'Arial Black', 'Helvetica Bold', 'Poppins', sans-serif" font-size="44" font-weight="900" fill="url(#driveGreenGradient)" letter-spacing="-2.5">DRIVE</text>
+    
+    <!-- CARSELLERS - Spaced, refined, light grey -->
+    <text x="0" y="74" font-family="Inter, 'Arial', 'Helvetica', 'Poppins', sans-serif" font-size="16" font-weight="500" fill="#CBD5E1" letter-spacing="4.5">C A R S E L L E R S</text>
+    
+    <!-- Premium accent line - Signature green underline (Terava signature) -->
+    <line x1="0" y1="66" x2="115" y2="66" stroke="#2fa88a" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- Additional subtle brand accent - small dot (premium touch) -->
+    <circle cx="122" cy="66" r="2.5" fill="#2fa88a" opacity="0.9"/>
+    
+    <!-- Very faint secondary line for depth (optional luxury detail) -->
+    <line x1="0" y1="68" x2="90" y2="68" stroke="#2fa88a" stroke-width="1" opacity="0.3" stroke-linecap="round"/>
+</svg>

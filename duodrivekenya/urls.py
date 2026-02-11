@@ -28,7 +28,7 @@ urlpatterns = [
      path('api/', include('chats.urls')), 
      path("api/users/", include("users.urls")),
      path("api/", include("favourites.urls")),
-     path("api/", include("filters.urls")),
+    path("api/history/", include("filters.urls")),
 
 ]
 

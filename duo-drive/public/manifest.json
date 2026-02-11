@@ -1,0 +1,41 @@
+{
+    "name": "Duo Drive Kenya",
+    "short_name": "Duo Drive Kenya",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#E76C21",
+    "description": "Empowering Africa with Secure Identity Verification",
+    "icons": [
+      {
+        "src": "/icon/36.png",
+        "sizes": "36x36",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon/48.png",
+        "sizes": "48x48",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon/75.png",
+        "sizes": "75x75",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon/144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon/192.png",
+        "sizes": "196x196",
+       "type": "image/png"
+      },
+      {
+        "src": "/icon/512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
