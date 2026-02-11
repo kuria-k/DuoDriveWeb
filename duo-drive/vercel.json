@@ -1,5 +1,4 @@
 {
-  "rootDirectory": "duo-drive",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
