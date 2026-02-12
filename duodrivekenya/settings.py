@@ -33,19 +33,23 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # ALLOWED_HOSTS = []
 DEBUG = False
-ALLOWED_HOSTS = ['https://duodriveweb.onrender.com']
+ALLOWED_HOSTS = ['duodriveweb.onrender.com']
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # Add these lines:
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOW_ALL_ORIGINS = True  # or restrict to your frontend domain
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://duodrivemotors.vercel.app",
 ]
+
 
 # For development, you can also temporarily disable CSRF for specific origins
 # Remove this in production!
