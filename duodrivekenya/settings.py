@@ -33,6 +33,29 @@ ALLOWED_HOSTS = []
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Add these lines:
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# For development, you can also temporarily disable CSRF for specific origins
+# Remove this in production!
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False
+
+# Add your production domain when deploying
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:3000",
+#     "https://your-vercel-app.vercel.app",
+# ]
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
@@ -118,10 +141,21 @@ WSGI_APPLICATION = 'duodrivekenya.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'duodrive_db',
+        'USER': 'duodrive_user',
+        'PASSWORD': 'machariakelvin442@admin',  
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
