@@ -1,1 +1,7 @@
 .env/
+
+
+echo "db.sqlite3" >> .gitignore
+echo "db.sqlite3.*" >> .gitignore
+echo "*.sqlite3" >> .gitignore
+echo "datadump.json" >> .gitignore
