@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # ALLOWED_HOSTS = []
 DEBUG = False
-ALLOWED_HOSTS = ['your-app.onrender.com']
+ALLOWED_HOSTS = ['https://duodriveweb.onrender.com']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
