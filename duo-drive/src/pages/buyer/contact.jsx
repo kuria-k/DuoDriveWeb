@@ -424,7 +424,7 @@ import { FaTiktok } from "react-icons/fa";
 const Contact = () => {
   const location = useLocation();
   const car = location.state?.car;
-  const storedUserName = localStorage.getItem("userName") || "";
+  const storedUserName = sessionStorage.getItem("userName") || "";
 
   const [formData, setFormData] = useState({
     name: storedUserName,

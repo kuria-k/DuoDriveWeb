@@ -12,7 +12,7 @@ const api = axios.create({
 
 // Add an interceptor to attach the token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   if (token) {
     // Use "Token" prefix for DRF TokenAuthentication
     config.headers.Authorization = `Token ${token}`;
@@ -245,7 +245,7 @@ export const getUserById = async (id) => {
 };
 
 export const getMyProfile = async () => {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("authToken");
   const response = await api.get("/users/me/", {
     headers: { Authorization: `Token ${token}` },
   });
@@ -359,10 +359,10 @@ export const deleteFilterHistory = async (id) => {
 
 export const saveSearchToHistory = (filters) => {
   try {
-    const username = localStorage.getItem("userName");
+    const username = sessionStorage.getItem("userName");
     if (!username) return;
     
-    const userSearches = JSON.parse(localStorage.getItem(`userSearches_${username}`) || '[]');
+    const userSearches = JSON.parse(sessionStorage.getItem(`userSearches_${username}`) || '[]');
     
     const newSearch = {
       id: Date.now(), // Simple ID based on timestamp
@@ -374,19 +374,19 @@ export const saveSearchToHistory = (filters) => {
     userSearches.unshift(newSearch); // Add to beginning
     const limitedSearches = userSearches.slice(0, 20); // Keep only 20 most recent
     
-    localStorage.setItem(`userSearches_${username}`, JSON.stringify(limitedSearches));
+    sessionStorage.setItem(`userSearches_${username}`, JSON.stringify(limitedSearches));
     return newSearch;
   } catch (error) {
-    console.error("Error saving search to localStorage:", error);
+    console.error("Error saving search to sessionstorage:", error);
   }
 };
 
 export const getUserSearches = () => {
   try {
-    const username = localStorage.getItem("userName");
+    const username = sessionStorage.getItem("userName");
     if (!username) return [];
     
-    const userSearches = JSON.parse(localStorage.getItem(`userSearches_${username}`) || '[]');
+    const userSearches = JSON.parse(sessionStorage.getItem(`userSearches_${username}`) || '[]');
     return userSearches;
   } catch (error) {
     console.error("Error getting user searches:", error);

@@ -172,7 +172,7 @@ const BuyerLayout = () => {
      AUTH CHECK (NO AUTO-LOGOUT)
   ============================== */
   useEffect(() => {
-    const role = localStorage.getItem("role");
+    const role = sessionStorage.getItem("role");
 
     // Only redirect if user is not a buyer
     if (role !== "buyer") {

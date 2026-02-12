@@ -35,8 +35,8 @@ const CarDetail = () => {
   const [favourites, setFavourites] = useState([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
-  const userName = localStorage.getItem("userName") || "";
-  const userId = localStorage.getItem("userId") || "";
+  const userName = sessionStorage.getItem("userName") || "";
+  const userId = sessionStorage.getItem("userId") || "";
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -60,7 +60,7 @@ const CarDetail = () => {
         setFavourites(favs.map((f) => f.car.id));
       } catch (err) {
         console.error("Favourites load failed:", err);
-        const saved = localStorage.getItem(`favourites_${userId}`);
+        const saved = sessionStorage.getItem(`favourites_${userId}`);
         if (saved) {
           setFavourites(JSON.parse(saved));
         }
@@ -109,7 +109,7 @@ const CarDetail = () => {
       const updatedFavourites = favourites.includes(carId)
         ? favourites.filter((id) => id !== carId)
         : [...favourites, carId];
-      localStorage.setItem(`favourites_${userId}`, JSON.stringify(updatedFavourites));
+      sessionStorage.setItem(`favourites_${userId}`, JSON.stringify(updatedFavourites));
     }
 
     try {

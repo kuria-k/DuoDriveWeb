@@ -154,10 +154,10 @@ const Inventory = () => {
   const [aiResponse, setAiResponse] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
 
-  const userName = localStorage.getItem("userName") || "there";
-  const userId = localStorage.getItem("userId") || "";
-  const userEmail = localStorage.getItem("userEmail") || "";
-  const userPhone = localStorage.getItem("userPhone") || "";
+  const userName = sessionStorage.getItem("userName") || "there";
+  const userId = sessionStorage.getItem("userId") || "";
+  const userEmail = sessionStorage.getItem("userEmail") || "";
+  const userPhone = sessionStorage.getItem("userPhone") || "";
 
   /* ================= FETCH ================= */
   useEffect(() => {
@@ -189,7 +189,7 @@ const Inventory = () => {
       setFavourites(favs.map((f) => f.car.id));
     } catch (err) {
       console.error("Favourites load failed:", err);
-      const saved = localStorage.getItem(`favourites_${userId}`);
+      const saved = sessionStorage.getItem(`favourites_${userId}`);
       if (saved) setFavourites(JSON.parse(saved));
     }
   };
@@ -239,7 +239,7 @@ const Inventory = () => {
       const updatedFavourites = favourites.includes(carId)
         ? favourites.filter((id) => id !== carId)
         : [...favourites, carId];
-      localStorage.setItem(
+      sessionStorage.setItem(
         `favourites_${userId}`,
         JSON.stringify(updatedFavourites)
       );

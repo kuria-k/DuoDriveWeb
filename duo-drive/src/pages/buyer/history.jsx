@@ -31,10 +31,10 @@ const BuyerHistory = () => {
   const fetchAllHistory = async () => {
     try {
       setLoading(true);
-      const username = localStorage.getItem("userName");
+      const username = sessionStorage.getItem("userName");
       
       if (!username) {
-        console.error("No username in localStorage");
+        console.error("No username in sessionstorage");
         setCurrentUser("");
         setLoading(false);
         return;
@@ -53,7 +53,7 @@ const BuyerHistory = () => {
         return contact.name.toLowerCase().trim() === username.toLowerCase().trim();
       });
       
-      console.log(`👤 Found ${userContacts.length} contacts for user ${username}`);
+      console.log(` Found ${userContacts.length} contacts for user ${username}`);
       
       // Separate test drives and inquiries
       const testDrivesList = userContacts.filter(contact => {

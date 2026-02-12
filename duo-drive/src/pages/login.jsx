@@ -75,11 +75,16 @@ const AuthForm = () => {
         const role = userData.is_superuser
           ? "admin"
           : userData.role?.toLowerCase();
-        localStorage.setItem("role", role);
-        localStorage.setItem("authToken", userData.token);
-        localStorage.setItem("userName", userData.username);
-        localStorage.setItem("userEmail", userData.email);
-        localStorage.setItem("userPhone", userData.phone_number);
+        // localStorage.setItem("role", role);
+        // localStorage.setItem("authToken", userData.token);
+        // localStorage.setItem("userName", userData.username);
+        // localStorage.setItem("userEmail", userData.email);
+        // localStorage.setItem("userPhone", userData.phone_number);
+        sessionStorage.setItem("role", role);
+      sessionStorage.setItem("authToken", userData.token);
+      sessionStorage.setItem("userName", userData.username);
+      sessionStorage.setItem("userEmail", userData.email);
+      sessionStorage.setItem("userPhone", userData.phone_number);
         login(userData);
         showToast(`Welcome ${userData.username}!`);
         setLoading(false);

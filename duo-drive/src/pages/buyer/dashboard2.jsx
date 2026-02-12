@@ -19,8 +19,8 @@ const BuyerDashboard = () => {
       try {
         setLoading(true);
 
-        // Get username from localStorage
-        const storedName = localStorage.getItem("userName") || "Buyer";
+        // Get username from sessionstorage
+        const storedName = sessionStorage.getItem("userName") || "Buyer";
         setUserName(storedName);
 
         // Fetch favourites

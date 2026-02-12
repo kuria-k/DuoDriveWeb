@@ -8,8 +8,8 @@ const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-  const role = localStorage.getItem("role");
-  const isSuperuser = localStorage.getItem("isSuperuser");
+  const role = sessionStorage.getItem("role");
+  const isSuperuser = sessionStorage.getItem("isSuperuser");
 
   if (role !== "admin" && isSuperuser !== "true") {
     navigate("/login", { replace: true });
@@ -22,9 +22,9 @@ const AdminLayout = () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         // Clear session
-        localStorage.removeItem("role");
-        localStorage.removeItem("isSuperuser");
-        localStorage.removeItem("authToken");
+        sessionStorage.removeItem("role");
+        sessionStorage.removeItem("isSuperuser");
+        sessionStorage.removeItem("authToken");
         setShowModal(true);
       }, 1000 * 13600 * 60); 
     };

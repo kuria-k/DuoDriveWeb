@@ -9,7 +9,7 @@ const BuyerProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("authToken");
+      const token = sessionStorage.getItem("authToken");
       if (!token) {
         setError("No token found. Please log in again.");
         setLoading(false); // stop loading spinner

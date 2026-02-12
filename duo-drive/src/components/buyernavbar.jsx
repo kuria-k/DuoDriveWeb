@@ -37,7 +37,7 @@ const BuyerNavbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const name = localStorage.getItem("userName");
+    const name = sessionStorage.getItem("userName");
     if (name) {
       const parts = name.trim().split(" ");
       const userInitials =
@@ -56,8 +56,8 @@ const BuyerNavbar = () => {
   // };
   // In your logout handler (wherever it is)
 const handleLogout = () => {
-  localStorage.removeItem("role");
-  localStorage.removeItem("authToken");
+  sessionStorage.removeItem("role");
+  sessionStorage.removeItem("authToken");
   // Remove any other stored user data
   navigate("/login", { replace: true });
 };
@@ -72,7 +72,7 @@ const handleLogout = () => {
               <span className="text-gray-200">
                 Hello,
                 <span className="ml-1 font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-400 bg-clip-text text-transparent hover:from-teal-400 hover:to-green-500 transition-all duration-300">
-                  {localStorage.getItem("userName") || "User"}
+                  {sessionStorage.getItem("userName") || "User"}
                 </span>
               </span>
             </div>

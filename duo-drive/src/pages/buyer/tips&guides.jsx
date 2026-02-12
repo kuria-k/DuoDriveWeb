@@ -34,12 +34,12 @@ const SmartCarBuyerGuide = () => {
   const [checked, setChecked] = useState({});
 
   useEffect(() => {
-    const saved = localStorage.getItem("buyerGuideProgress");
+    const saved = sessionStorage.getItem("buyerGuideProgress");
     if (saved) setChecked(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("buyerGuideProgress", JSON.stringify(checked));
+    sessionStorage.setItem("buyerGuideProgress", JSON.stringify(checked));
   }, [checked]);
 
   const toggle = (key) =>

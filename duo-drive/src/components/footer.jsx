@@ -103,9 +103,9 @@ const Footer = () => {
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-   // Check localStorage role or user.role
+   // Check sessionStorage role or user.role
   const { user } = useAuth();
-  const role = localStorage.getItem("role") || user?.role?.toLowerCase();
+  const role = sessionStorage.getItem("role") || user?.role?.toLowerCase();
   const isBuyerLoggedIn = role === "buyer";
 
 

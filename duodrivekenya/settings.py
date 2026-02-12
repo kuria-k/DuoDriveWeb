@@ -24,12 +24,16 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d2z-3!)gi94ox*whf5+-flq8s!&n$_xr(k^y84y%f0!c939!@5'
+# SECRET_KEY = 'django-insecure-d2z-3!)gi94ox*whf5+-flq8s!&n$_xr(k^y84y%f0!c939!@5'
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['your-app.onrender.com']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -51,10 +55,10 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False
 
 # Add your production domain when deploying
-# CSRF_TRUSTED_ORIGINS = [
-#     "http://localhost:3000",
-#     "https://your-vercel-app.vercel.app",
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "https://duodrivemotors.vercel.app/",
+]
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -99,6 +103,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -151,13 +156,17 @@ WSGI_APPLICATION = 'duodrivekenya.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'duodrive_db',
-        'USER': 'duodrive_user',
-        'PASSWORD': 'machariakelvin442@admin',  
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
+
+
+
+
 
 
 # Password validation
@@ -194,7 +203,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 
