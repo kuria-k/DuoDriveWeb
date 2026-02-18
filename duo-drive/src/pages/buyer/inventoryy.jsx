@@ -11,26 +11,32 @@ import {
   createFilterHistory,
 } from "../../utils/api";
 
-import { 
-  AiOutlineCar, 
-  AiOutlineHeart, 
+import {
+  AiOutlineCar,
+  AiOutlineHeart,
   AiFillHeart,
   AiOutlineSafety,
   AiOutlineThunderbolt,
   AiOutlineCheckCircle,
-  AiOutlineStar
+  AiOutlineStar,
 } from "react-icons/ai";
 import { FiFilter, FiX, FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { 
-  HiSparkles, 
-  HiChevronLeft, 
+import {
+  HiSparkles,
+  HiChevronLeft,
   HiChevronRight,
-  HiOutlineLightningBolt 
+  HiOutlineLightningBolt,
 } from "react-icons/hi";
-import { BsGrid3X3Gap, BsListUl, BsFuelPump, BsGear, BsCalendar } from "react-icons/bs";
+import {
+  BsGrid3X3Gap,
+  BsListUl,
+  BsFuelPump,
+  BsGear,
+  BsCalendar,
+} from "react-icons/bs";
 import { MdOutlineLocalGasStation, MdSpeed, MdSecurity } from "react-icons/md";
 import { TbAutomaticGearbox, TbManualGearbox } from "react-icons/tb";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, number } from "framer-motion";
 
 /* ================= CONFIG ================= */
 const CARS_PER_PAGE = 16;
@@ -67,7 +73,7 @@ const saveFilterHistory = async (newFilters) => {
 
 /* ================= COMPONENTS ================= */
 const PremiumStatCard = ({ icon: Icon, label, value, trend }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     className="bg-white/90 backdrop-blur-xl rounded-2xl border border-gray-100 p-5 shadow-lg hover:shadow-xl transition-all"
@@ -80,14 +86,22 @@ const PremiumStatCard = ({ icon: Icon, label, value, trend }) => (
         <p className="text-sm text-gray-500 font-medium">{label}</p>
         <p className="text-2xl font-bold text-gray-900">{value}</p>
         {trend && (
-          <p className="text-xs text-green-600 font-medium mt-1">↑ {trend} from last week</p>
+          <p className="text-xs text-green-600 font-medium mt-1">
+            ↑ {trend} from last week
+          </p>
         )}
       </div>
     </div>
   </motion.div>
 );
 
-const PremiumFilterSelect = ({ label, value, options, onChange, icon: Icon }) => (
+const PremiumFilterSelect = ({
+  label,
+  value,
+  options,
+  onChange,
+  icon: Icon,
+}) => (
   <div className="relative">
     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
       {label}
@@ -120,9 +134,10 @@ const QuickFilterChip = ({ label, active, onClick }) => (
     whileTap={{ scale: 0.98 }}
     onClick={onClick}
     className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap
-      ${active 
-        ? 'bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg shadow-[#2fa88a]/30' 
-        : 'bg-white text-gray-600 border-2 border-gray-100 hover:border-[#2fa88a] hover:text-[#2fa88a]'
+      ${
+        active
+          ? "bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg shadow-[#2fa88a]/30"
+          : "bg-white text-gray-600 border-2 border-gray-100 hover:border-[#2fa88a] hover:text-[#2fa88a]"
       }`}
   >
     {label}
@@ -160,10 +175,27 @@ const Inventory = () => {
   const userPhone = sessionStorage.getItem("userPhone") || "";
 
   /* ================= FETCH ================= */
+
   useEffect(() => {
     loadCars();
-    loadFavourites();
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    // 1️⃣ Instantly hydrate from localStorage (fast UI)
+    const saved = localStorage.getItem(`favourites_${userId}`);
+    if (saved) {
+      try {
+        setFavourites(JSON.parse(saved).map(Number));
+      } catch (err) {
+        console.error("LocalStorage parse error:", err);
+      }
+    }
+
+    // 2️⃣ Then sync with backend
+    syncFavouritesFromBackend();
+  }, [userId]);
 
   const loadCars = async () => {
     try {
@@ -182,15 +214,45 @@ const Inventory = () => {
     }
   };
 
-  const loadFavourites = async () => {
-    if (!userId) return;
+  // const loadFavourites = async () => {
+  //   if (!userId) return;
+
+  //   try {
+  //     const favs = await getFavourites(userId);
+  //     const normalised = favs.map((f) => Number(f.car.id));
+  //     setFavourites(normalised);
+
+  //     localStorage.setItem(
+  //       `favourites_${userId}`,
+  //       JSON.stringify(normalised)
+  //     );
+
+  //     console.log("Loaded favourites from backend:", normalised);
+  //   } catch (err) {
+  //     console.error("Favourites load failed:", err);
+
+  //     const saved = localStorage.getItem(`favourites_${userId}`);
+  //     if (saved) {
+  //       const parsed = JSON.parse(saved).map(Number);
+  //       setFavourites(parsed);
+  //       console.log("Loaded favourites from localStorage:", parsed);
+  //     }
+  //   }
+  // };
+  const syncFavouritesFromBackend = async () => {
     try {
       const favs = await getFavourites(userId);
-      setFavourites(favs.map((f) => f.car.id));
+
+      const normalised =
+        favs?.map((f) => Number(f?.car?.id)).filter(Boolean) || [];
+
+      setFavourites(normalised);
+
+      localStorage.setItem(`favourites_${userId}`, JSON.stringify(normalised));
+
+      console.log("Synced favourites from backend:", normalised);
     } catch (err) {
-      console.error("Favourites load failed:", err);
-      const saved = sessionStorage.getItem(`favourites_${userId}`);
-      if (saved) setFavourites(JSON.parse(saved));
+      console.error("Backend favourites sync failed:", err);
     }
   };
 
@@ -204,22 +266,30 @@ const Inventory = () => {
 
       // Quick filters
       if (quickFilter === "under2M" && price >= 2000000) return false;
-      if (quickFilter === "hybrid" && !["hybrid", "electric"].includes(car.fuel_type)) return false;
+      if (
+        quickFilter === "hybrid" &&
+        !["hybrid", "electric"].includes(car.fuel_type)
+      )
+        return false;
       if (quickFilter === "new" && !isNewCar(car.created_at)) return false;
 
       if (filters.model && car.model !== filters.model) return false;
       if (filters.fuel && car.fuel_type !== filters.fuel) return false;
-      if (filters.priceRange && !PRICE_FILTERS[filters.priceRange]?.(price)) return false;
+      if (filters.priceRange && !PRICE_FILTERS[filters.priceRange]?.(price))
+        return false;
 
       return true;
     });
   }, [cars, filters, quickFilter]);
 
   /* ================= PAGINATION ================= */
-  const totalPages = Math.max(1, Math.ceil(filteredCars.length / CARS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCars.length / CARS_PER_PAGE),
+  );
   const paginatedCars = filteredCars.slice(
     (page - 1) * CARS_PER_PAGE,
-    page * CARS_PER_PAGE
+    page * CARS_PER_PAGE,
   );
 
   const handlePageChange = (newPage) => {
@@ -229,31 +299,32 @@ const Inventory = () => {
 
   /* ================= FAVOURITES ================= */
   const handleToggleFavourite = async (carId) => {
-    setFavourites((prev) =>
-      prev.includes(carId)
-        ? prev.filter((id) => id !== carId)
-        : [...prev, carId]
-    );
+    console.log("Clicked", carId);
+    console.log("User ID:", userId);
 
-    if (userId) {
-      const updatedFavourites = favourites.includes(carId)
-        ? favourites.filter((id) => id !== carId)
-        : [...favourites, carId];
-      sessionStorage.setItem(
-        `favourites_${userId}`,
-        JSON.stringify(updatedFavourites)
-      );
+    if (!userId) {
+      console.log("No userId — exiting");
+      return;
     }
+
+    // Optimistic update
+    setFavourites((prev) => {
+      const updated = prev.includes(carId)
+        ? prev.filter((id) => id !== carId)
+        : [...prev, carId];
+
+      localStorage.setItem(`favourites_${userId}`, JSON.stringify(updated));
+
+      return updated;
+    });
 
     try {
       await toggleFavourite(carId);
     } catch (err) {
       console.error("Toggle favourite failed:", err);
-      setFavourites((prev) =>
-        prev.includes(carId)
-          ? prev.filter((id) => id !== carId)
-          : [...prev, carId]
-      );
+
+      // Re-sync from backend if something fails
+      syncFavouritesFromBackend();
     }
   };
 
@@ -270,7 +341,9 @@ const Inventory = () => {
       setAiResponse(res.data?.message || "No response.");
     } catch (err) {
       console.error("AI error:", err);
-      setAiResponse("Sorry, I couldn't process your request. Please try again.");
+      setAiResponse(
+        "Sorry, I couldn't process your request. Please try again.",
+      );
     } finally {
       setAiLoading(false);
     }
@@ -284,181 +357,196 @@ const Inventory = () => {
     saveFilterHistory(cleared);
   };
 
-  const hasActiveFilters = filters.model || filters.fuel || filters.priceRange || quickFilter !== "all";
+  const hasActiveFilters =
+    filters.model ||
+    filters.fuel ||
+    filters.priceRange ||
+    quickFilter !== "all";
 
   /* ================= RENDER ================= */
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex flex-col">
-      
       {/* ==================== HERO SECTION ==================== */}
-      
 
       {/* ==================== STICKY FILTER BAR ==================== */}
-      <div 
+      <div
         // className="sticky z-40 bg-white/80 backdrop-blur-xl border-y border-gray-100 shadow-lg"
-         className="bg-white/80 backdrop-blur-xl border-y border-gray-100 shadow-lg"
+        className="bg-white/80 backdrop-blur-xl border-y border-gray-100 shadow-lg"
         style={{ top: "var(--buyer-nav-height)" }}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8">
-  <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto">
+            {/* ================= HEADER ROW ================= */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-6 border-b border-gray-200">
+              {/* Left: Title */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Refine Your Search
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Find the perfect vehicle that matches your needs
+                </p>
+              </div>
 
-    {/* ================= HEADER ROW ================= */}
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-6 border-b border-gray-200">
+              {/* Right: View Toggle */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center bg-gray-100 rounded-xl p-1">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2.5 rounded-lg transition ${
+                      viewMode === "grid"
+                        ? "bg-white text-[#2fa88a] shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    <BsGrid3X3Gap className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2.5 rounded-lg transition ${
+                      viewMode === "list"
+                        ? "bg-white text-[#2fa88a] shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    <BsListUl className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
 
-      {/* Left: Title */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900">
-          Refine Your Search
-        </h2>
-        <p className="text-sm text-gray-500">
-          Find the perfect vehicle that matches your needs
-        </p>
-      </div>
+            {/* ================= FILTER ROW ================= */}
+            <div className="py-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <PremiumFilterSelect
+                  label="Make"
+                  value={filters.model}
+                  onChange={(e) => {
+                    const newFilters = { ...filters, model: e.target.value };
+                    setFilters(newFilters);
+                    setPage(1);
+                    saveFilterHistory(newFilters);
+                  }}
+                  icon={AiOutlineCar}
+                  options={
+                    <>
+                      <option value="">All Makes</option>
+                      {[
+                        ...new Set(cars.map((c) => c?.model).filter(Boolean)),
+                      ].map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </>
+                  }
+                />
 
-      {/* Right: View Toggle */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center bg-gray-100 rounded-xl p-1">
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`p-2.5 rounded-lg transition ${
-              viewMode === "grid"
-                ? "bg-white text-[#2fa88a] shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <BsGrid3X3Gap className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setViewMode("list")}
-            className={`p-2.5 rounded-lg transition ${
-              viewMode === "list"
-                ? "bg-white text-[#2fa88a] shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <BsListUl className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </div>
+                <PremiumFilterSelect
+                  label="Price Range"
+                  value={filters.priceRange}
+                  onChange={(e) => {
+                    const newFilters = {
+                      ...filters,
+                      priceRange: e.target.value,
+                    };
+                    setFilters(newFilters);
+                    setPage(1);
+                    saveFilterHistory(newFilters);
+                  }}
+                  icon={AiOutlineStar}
+                  options={
+                    <>
+                      <option value="">All Prices</option>
+                      <option value="<1M">Under 1M KES</option>
+                      <option value="1M-2M">1M – 2M KES</option>
+                      <option value="2M-3M">2M – 3M KES</option>
+                      <option value=">3M">Above 3M KES</option>
+                    </>
+                  }
+                />
 
-    {/* ================= FILTER ROW ================= */}
-    <div className="py-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <PremiumFilterSelect
+                  label="Fuel Type"
+                  value={filters.fuel}
+                  onChange={(e) => {
+                    const newFilters = { ...filters, fuel: e.target.value };
+                    setFilters(newFilters);
+                    setPage(1);
+                    saveFilterHistory(newFilters);
+                  }}
+                  icon={BsFuelPump}
+                  options={
+                    <>
+                      <option value="">All Fuel Types</option>
+                      <option value="petrol">Petrol</option>
+                      <option value="diesel">Diesel</option>
+                      <option value="hybrid">Hybrid</option>
+                      <option value="electric">Electric</option>
+                    </>
+                  }
+                />
 
-        <PremiumFilterSelect
-          label="Make"
-          value={filters.model}
-          onChange={(e) => {
-            const newFilters = { ...filters, model: e.target.value };
-            setFilters(newFilters);
-            setPage(1);
-            saveFilterHistory(newFilters);
-          }}
-          icon={AiOutlineCar}
-          options={
-            <>
-              <option value="">All Makes</option>
-              {[...new Set(cars.map((c) => c?.model).filter(Boolean))].map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </>
-          }
-        />
-
-        <PremiumFilterSelect
-          label="Price Range"
-          value={filters.priceRange}
-          onChange={(e) => {
-            const newFilters = { ...filters, priceRange: e.target.value };
-            setFilters(newFilters);
-            setPage(1);
-            saveFilterHistory(newFilters);
-          }}
-          icon={AiOutlineStar}
-          options={
-            <>
-              <option value="">All Prices</option>
-              <option value="<1M">Under 1M KES</option>
-              <option value="1M-2M">1M – 2M KES</option>
-              <option value="2M-3M">2M – 3M KES</option>
-              <option value=">3M">Above 3M KES</option>
-            </>
-          }
-        />
-
-        <PremiumFilterSelect
-          label="Fuel Type"
-          value={filters.fuel}
-          onChange={(e) => {
-            const newFilters = { ...filters, fuel: e.target.value };
-            setFilters(newFilters);
-            setPage(1);
-            saveFilterHistory(newFilters);
-          }}
-          icon={BsFuelPump}
-          options={
-            <>
-              <option value="">All Fuel Types</option>
-              <option value="petrol">Petrol</option>
-              <option value="diesel">Diesel</option>
-              <option value="hybrid">Hybrid</option>
-              <option value="electric">Electric</option>
-            </>
-          }
-        />
-
-        {/* Reset Button */}
-        <div className="flex items-end">
-          {hasActiveFilters && (
-            <button
-              onClick={resetFilters}
-              className="w-full h-[52px] border border-gray-300 
+                {/* Reset Button */}
+                <div className="flex items-end">
+                  {hasActiveFilters && (
+                    <button
+                      onClick={resetFilters}
+                      className="w-full h-[52px] border border-gray-300 
               rounded-xl text-sm font-medium text-gray-700 
               hover:bg-gray-50 transition"
-            >
-              Reset Filters
-            </button>
-          )}
+                    >
+                      Reset Filters
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ================= QUICK FILTERS ================= */}
+            <div className="pb-6 flex flex-wrap gap-3">
+              <QuickFilterChip
+                label="All Vehicles"
+                active={quickFilter === "all"}
+                onClick={() => {
+                  setQuickFilter("all");
+                  setPage(1);
+                }}
+              />
+              <QuickFilterChip
+                label="Under 2M KES"
+                active={quickFilter === "under2M"}
+                onClick={() => {
+                  setQuickFilter("under2M");
+                  setPage(1);
+                }}
+              />
+              <QuickFilterChip
+                label="Hybrid / Electric"
+                active={quickFilter === "hybrid"}
+                onClick={() => {
+                  setQuickFilter("hybrid");
+                  setPage(1);
+                }}
+              />
+              <QuickFilterChip
+                label="New Arrivals"
+                active={quickFilter === "new"}
+                onClick={() => {
+                  setQuickFilter("new");
+                  setPage(1);
+                }}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    {/* ================= QUICK FILTERS ================= */}
-    <div className="pb-6 flex flex-wrap gap-3">
-      <QuickFilterChip 
-        label="All Vehicles" 
-        active={quickFilter === "all"} 
-        onClick={() => { setQuickFilter("all"); setPage(1); }} 
-      />
-      <QuickFilterChip 
-        label="Under 2M KES" 
-        active={quickFilter === "under2M"} 
-        onClick={() => { setQuickFilter("under2M"); setPage(1); }} 
-      />
-      <QuickFilterChip 
-        label="Hybrid / Electric" 
-        active={quickFilter === "hybrid"} 
-        onClick={() => { setQuickFilter("hybrid"); setPage(1); }} 
-      />
-      <QuickFilterChip 
-        label="New Arrivals" 
-        active={quickFilter === "new"} 
-        onClick={() => { setQuickFilter("new"); setPage(1); }} 
-      />
-    </div>
-
-  </div>
-</div>
-
       </div>
 
       {/* ==================== MAIN CONTENT ==================== */}
       <section className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-7xl mx-auto">
-          
           {/* Section Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-between mb-8"
@@ -469,9 +557,20 @@ const Inventory = () => {
                 Premium Collection
               </h2>
               <p className="text-gray-600 mt-2">
-                Showing <span className="font-semibold text-[#2fa88a]">{(page - 1) * CARS_PER_PAGE + 1}</span> - 
-                <span className="font-semibold text-[#2fa88a]">{Math.min(page * CARS_PER_PAGE, filteredCars.length)}</span> of 
-                <span className="font-semibold text-[#2fa88a]"> {filteredCars.length}</span> vehicles
+                Showing{" "}
+                <span className="font-semibold text-[#2fa88a]">
+                  {(page - 1) * CARS_PER_PAGE + 1}
+                </span>{" "}
+                -
+                <span className="font-semibold text-[#2fa88a]">
+                  {Math.min(page * CARS_PER_PAGE, filteredCars.length)}
+                </span>{" "}
+                of
+                <span className="font-semibold text-[#2fa88a]">
+                  {" "}
+                  {filteredCars.length}
+                </span>{" "}
+                vehicles
               </p>
             </div>
 
@@ -508,7 +607,7 @@ const Inventory = () => {
             </div>
           ) : filteredCars.length === 0 ? (
             /* Empty State */
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="text-center py-24 bg-white rounded-3xl border-2 border-gray-100 shadow-xl"
@@ -520,7 +619,8 @@ const Inventory = () => {
                 No vehicles found
               </h3>
               <p className="text-gray-600 mb-8 text-lg max-w-md mx-auto">
-                We couldn't find any vehicles matching your criteria. Try adjusting your filters.
+                We couldn't find any vehicles matching your criteria. Try
+                adjusting your filters.
               </p>
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -558,16 +658,18 @@ const Inventory = () => {
                       className={`group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl 
                         overflow-hidden border border-gray-100 hover:border-[#2fa88a]/30 
                         transition-all duration-500 hover:-translate-y-2 ${
-                        viewMode === "list" ? "flex flex-row" : ""
-                      }`}
+                          viewMode === "list" ? "flex flex-row" : ""
+                        }`}
                     >
                       {/* NEW Badge */}
                       {isNewCar(car.created_at) && (
                         <div className="absolute top-4 left-4 z-20">
                           <div className="relative">
                             <div className="absolute -inset-1 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] rounded-full blur opacity-70" />
-                            <div className="relative bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
-                              text-white text-xs px-4 py-1.5 rounded-full font-bold">
+                            <div
+                              className="relative bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
+                              text-white text-xs px-4 py-1.5 rounded-full font-bold"
+                            >
                               NEW ARRIVAL
                             </div>
                           </div>
@@ -579,8 +681,10 @@ const Inventory = () => {
                         <div className="absolute top-4 right-16 z-20">
                           <div className="relative">
                             <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full blur opacity-70" />
-                            <div className="relative bg-gradient-to-r from-red-500 to-red-600 
-                              text-white text-xs px-4 py-1.5 rounded-full font-bold">
+                            <div
+                              className="relative bg-gradient-to-r from-red-500 to-red-600 
+                              text-white text-xs px-4 py-1.5 rounded-full font-bold"
+                            >
                               {car.discount_percent}% OFF
                             </div>
                           </div>
@@ -598,7 +702,7 @@ const Inventory = () => {
                         className="absolute top-4 right-4 z-20 p-2.5 bg-white/95 backdrop-blur-sm 
                           rounded-full shadow-lg hover:shadow-xl transition-all"
                       >
-                        {favourites.includes(car.id) ? (
+                        {favourites.includes(Number(car.id)) ? (
                           <AiFillHeart className="w-5 h-5 text-red-500" />
                         ) : (
                           <AiOutlineHeart className="w-5 h-5 text-gray-700 hover:text-red-500" />
@@ -621,16 +725,22 @@ const Inventory = () => {
                               className="w-full h-full object-cover group-hover:scale-110 
                                 transition-transform duration-700"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
-                              opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            
+                            <div
+                              className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
+                              opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                            />
+
                             {/* Quick View Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 
-                              transition-all duration-500 transform group-hover:scale-100 scale-90">
+                            <div
+                              className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 
+                              transition-all duration-500 transform group-hover:scale-100 scale-90"
+                            >
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate(`/buyer/details/${car.id}`)}
+                                onClick={() =>
+                                  navigate(`/buyer/details/${car.id}`)
+                                }
                                 className="bg-white/95 backdrop-blur-sm text-gray-900 px-6 py-3 
                                   rounded-xl font-semibold shadow-2xl hover:shadow-3xl 
                                   transition-all border border-white/50"
@@ -648,16 +758,20 @@ const Inventory = () => {
                         {/* Status Badge */}
                         {car.status && (
                           <div className="absolute bottom-4 left-4">
-                            <div className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm
-                              ${car.status === "available" 
-                                ? "bg-[#2fa88a]/90 text-white border border-white/30" 
-                                : car.status === "reserved"
-                                  ? "bg-yellow-500/90 text-white border border-white/30"
-                                  : car.status === "sold"
-                                    ? "bg-gray-800/90 text-white border border-white/30"
-                                    : "bg-gray-600/90 text-white border border-white/30"
-                              }`}>
-                              {car.status.charAt(0).toUpperCase() + car.status.slice(1)}
+                            <div
+                              className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm
+                              ${
+                                car.status === "available"
+                                  ? "bg-[#2fa88a]/90 text-white border border-white/30"
+                                  : car.status === "reserved"
+                                    ? "bg-yellow-500/90 text-white border border-white/30"
+                                    : car.status === "sold"
+                                      ? "bg-red-500 text-white border border-white/30" // red when sold
+                                      : "bg-green-300 text-white border border-white/30" // for available cars
+                              }`}
+                            >
+                              {car.status.charAt(0).toUpperCase() +
+                                car.status.slice(1)}
                             </div>
                           </div>
                         )}
@@ -667,8 +781,10 @@ const Inventory = () => {
                       <div className="p-6 flex-1 flex flex-col">
                         <div className="mb-4">
                           <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#2fa88a] 
-                              transition-colors">
+                            <h3
+                              className="text-xl font-bold text-gray-900 group-hover:text-[#2fa88a] 
+                              transition-colors"
+                            >
                               {car.model} {car.name}
                             </h3>
                           </div>
@@ -678,7 +794,9 @@ const Inventory = () => {
                             {car.fuel_type && (
                               <div className="flex flex-col items-center p-2 bg-gray-50 rounded-lg">
                                 <BsFuelPump className="w-4 h-4 text-gray-600 mb-1" />
-                                <span className="text-xs text-gray-600 capitalize">{car.fuel_type}</span>
+                                <span className="text-xs text-gray-600 capitalize">
+                                  {car.fuel_type}
+                                </span>
                               </div>
                             )}
                             {car.transmission && (
@@ -688,13 +806,17 @@ const Inventory = () => {
                                 ) : (
                                   <TbManualGearbox className="w-4 h-4 text-gray-600 mb-1" />
                                 )}
-                                <span className="text-xs text-gray-600 capitalize">{car.transmission}</span>
+                                <span className="text-xs text-gray-600 capitalize">
+                                  {car.transmission}
+                                </span>
                               </div>
                             )}
                             {car.year && (
                               <div className="flex flex-col items-center p-2 bg-gray-50 rounded-lg">
                                 <BsCalendar className="w-4 h-4 text-gray-600 mb-1" />
-                                <span className="text-xs text-gray-600">{car.year}</span>
+                                <span className="text-xs text-gray-600">
+                                  {car.year}
+                                </span>
                               </div>
                             )}
                           </div>
@@ -706,14 +828,21 @@ const Inventory = () => {
                             <div>
                               <div className="flex items-baseline gap-2">
                                 <span className="text-3xl font-bold text-[#2fa88a]">
-                                  KES {Number(car.final_price ?? car.price).toLocaleString()}
+                                  KES{" "}
+                                  {Number(
+                                    car.final_price ?? car.price,
+                                  ).toLocaleString()}
                                 </span>
                                 <span className="text-sm text-gray-400 line-through">
                                   KES {Number(car.price).toLocaleString()}
                                 </span>
                               </div>
                               <p className="text-xs text-green-600 font-medium mt-1">
-                                Save KES {(Number(car.price) - Number(car.final_price ?? car.price)).toLocaleString()}
+                                Save KES{" "}
+                                {(
+                                  Number(car.price) -
+                                  Number(car.final_price ?? car.price)
+                                ).toLocaleString()}
                               </p>
                             </div>
                           ) : (
@@ -721,7 +850,9 @@ const Inventory = () => {
                               <span className="text-3xl font-bold text-[#2fa88a]">
                                 KES {Number(car.price ?? 0).toLocaleString()}
                               </span>
-                              <p className="text-xs text-gray-500 mt-1">Drive away price</p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Drive away price
+                              </p>
                             </div>
                           )}
                         </div>
@@ -765,7 +896,7 @@ const Inventory = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-16 flex items-center justify-center gap-2"
@@ -785,21 +916,23 @@ const Inventory = () => {
                   </motion.button>
 
                   <div className="flex gap-2">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <motion.button
-                        key={p}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handlePageChange(p)}
-                        className={`w-12 h-12 rounded-xl font-semibold transition-all ${
-                          page === p
-                            ? "bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg shadow-[#2fa88a]/30 scale-110"
-                            : "bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-100"
-                        }`}
-                      >
-                        {p}
-                      </motion.button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (p) => (
+                        <motion.button
+                          key={p}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => handlePageChange(p)}
+                          className={`w-12 h-12 rounded-xl font-semibold transition-all ${
+                            page === p
+                              ? "bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg shadow-[#2fa88a]/30 scale-110"
+                              : "bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-100"
+                          }`}
+                        >
+                          {p}
+                        </motion.button>
+                      ),
+                    )}
                   </div>
 
                   <motion.button
@@ -822,57 +955,65 @@ const Inventory = () => {
 
           {/* Financing Promo */}
           {filteredCars.length > 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="mt-20 mb-8"
             >
               <div className="relative group">
-                <div className="absolute -inset-2 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
-                  rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition" />
-                <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden 
-                  border border-gray-100">
+                <div
+                  className="absolute -inset-2 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
+                  rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition"
+                />
+                <div
+                  className="relative bg-white rounded-3xl shadow-2xl overflow-hidden 
+                  border border-gray-100"
+                >
                   <div className="grid lg:grid-cols-2 gap-8 items-center">
                     <div className="p-10 lg:p-12">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 
-                        bg-gradient-to-r from-[#1f7a63]/10 to-[#2fa88a]/10 rounded-full mb-6">
+                      <div
+                        className="inline-flex items-center gap-2 px-4 py-2 
+                        bg-gradient-to-r from-[#1f7a63]/10 to-[#2fa88a]/10 rounded-full mb-6"
+                      >
                         <AiOutlineThunderbolt className="w-4 h-4 text-[#2fa88a]" />
                         <span className="text-sm font-semibold text-[#2fa88a]">
                           Special Financing Offer
                         </span>
                       </div>
                       <h3 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-                        Drive Today, 
+                        Drive Today,
                         <span className="bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] bg-clip-text text-transparent block">
                           Pay Tomorrow
                         </span>
                       </h3>
                       <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-                        Get pre-approved in minutes with rates starting at 9.9% APR. 
-                        Flexible terms up to 72 months available for qualified buyers.
+                        Get pre-approved in minutes with rates starting at 9.9%
+                        APR. Flexible terms up to 72 months available for
+                        qualified buyers.
                       </p>
                       <div className="flex flex-col sm:flex-row gap-4">
                         <motion.a
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          href="/buyer/financing"
+                          href="/buyer/contact"
                           className="px-8 py-4 bg-gradient-to-r from-[#1f7a63] 
                             to-[#2fa88a] text-white rounded-xl font-semibold text-lg 
                             shadow-lg hover:shadow-xl transition-all text-center"
                         >
                           Apply Now
                         </motion.a>
-                        <motion.button
+                        <motion.a
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
+                          href="/buyer/financing"
                           className="px-8 py-4 bg-white border-2 border-gray-200 
                             text-gray-700 rounded-xl font-semibold text-lg 
                             hover:border-[#2fa88a] hover:text-[#2fa88a] 
                             transition-all"
                         >
                           Calculate Payment
-                        </motion.button>
+                        </motion.a>
                       </div>
                     </div>
                     <div className="relative h-full min-h-[400px] hidden lg:block">
@@ -887,8 +1028,12 @@ const Inventory = () => {
                           <div className="flex items-center gap-4">
                             <MdSecurity className="w-8 h-8 text-[#2fa88a]" />
                             <div>
-                              <p className="font-semibold text-gray-900">100% Secure Application</p>
-                              <p className="text-sm text-gray-600">Your information is encrypted</p>
+                              <p className="font-semibold text-gray-900">
+                                100% Secure Application
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Your information is encrypted
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -937,10 +1082,14 @@ const Inventory = () => {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
-                      rounded-2xl blur-lg opacity-70" />
-                    <div className="relative w-16 h-16 bg-gradient-to-br from-[#1f7a63] to-[#2fa88a] 
-                      rounded-2xl flex items-center justify-center shadow-xl">
+                    <div
+                      className="absolute -inset-1 bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] 
+                      rounded-2xl blur-lg opacity-70"
+                    />
+                    <div
+                      className="relative w-16 h-16 bg-gradient-to-br from-[#1f7a63] to-[#2fa88a] 
+                      rounded-2xl flex items-center justify-center shadow-xl"
+                    >
                       <HiSparkles className="w-8 h-8 text-white" />
                     </div>
                   </div>
@@ -970,8 +1119,9 @@ const Inventory = () => {
               </div>
 
               <p className="text-gray-600 mb-6 text-base bg-gray-50 p-4 rounded-xl">
-                ✨ I'm your personal car shopping assistant. Tell me what you're looking for - 
-                budget, preferences, features - and I'll help find your perfect match.
+                ✨ I'm your personal car shopping assistant. Tell me what you're
+                looking for - budget, preferences, features - and I'll help find
+                your perfect match.
               </p>
 
               {/* Input Area */}
@@ -998,15 +1148,17 @@ const Inventory = () => {
                 disabled={aiLoading || !aiPrompt.trim()}
                 className={`w-full py-5 rounded-xl font-semibold text-lg transition-all 
                   flex items-center justify-center gap-3 ${
-                  aiLoading || !aiPrompt.trim()
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg hover:shadow-xl"
-                }`}
+                    aiLoading || !aiPrompt.trim()
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[#1f7a63] to-[#2fa88a] text-white shadow-lg hover:shadow-xl"
+                  }`}
               >
                 {aiLoading ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent 
-                      rounded-full animate-spin" />
+                    <div
+                      className="w-5 h-5 border-2 border-white border-t-transparent 
+                      rounded-full animate-spin"
+                    />
                     Analyzing your request...
                   </>
                 ) : (
@@ -1028,11 +1180,15 @@ const Inventory = () => {
                       rounded-xl border-2 border-gray-200"
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-[#1f7a63] to-[#2fa88a] 
-                        rounded-lg flex items-center justify-center">
+                      <div
+                        className="w-8 h-8 bg-gradient-to-br from-[#1f7a63] to-[#2fa88a] 
+                        rounded-lg flex items-center justify-center"
+                      >
                         <HiSparkles className="w-4 h-4 text-white" />
                       </div>
-                      <p className="font-semibold text-gray-900">AI Recommendation</p>
+                      <p className="font-semibold text-gray-900">
+                        AI Recommendation
+                      </p>
                     </div>
                     <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                       {aiResponse}
@@ -1049,7 +1205,7 @@ const Inventory = () => {
                     "SUV under 2.5M",
                     "Hybrid with sunroof",
                     "Low mileage automatic",
-                    "7-seater family car"
+                    "7-seater family car",
                   ].map((prompt) => (
                     <button
                       key={prompt}
@@ -1066,8 +1222,6 @@ const Inventory = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-    
     </div>
   );
 };

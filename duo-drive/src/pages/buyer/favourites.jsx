@@ -265,17 +265,18 @@ const BuyerFavourites = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  onClick={() => navigate("buyer/inventoryy")}
-                  className="bg-teal-700 hover:bg-teal-800 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
-                >
-                  Browse Cars
-                </button>
-                <button
-                  onClick={() => navigate("buyer/dashboard")}
-                  className="bg-white border-2 border-gray-300 hover:border-teal-700 text-gray-800 hover:text-teal-700 px-8 py-3 rounded-xl font-semibold transition-colors"
-                >
-                  Go to Dashboard
-                </button>
+  onClick={() => navigate("/buyer/inventory")}
+  className="bg-teal-700 hover:bg-teal-800 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
+>
+  Browse Cars
+</button>
+<button
+  onClick={() => navigate("/buyer/dashboard")}
+  className="bg-white border-2 border-gray-300 hover:border-teal-700 text-gray-800 hover:text-teal-700 px-8 py-3 rounded-xl font-semibold transition-colors"
+>
+  Go to Dashboard
+</button>
+
               </div>
               
               {/* Tips */}

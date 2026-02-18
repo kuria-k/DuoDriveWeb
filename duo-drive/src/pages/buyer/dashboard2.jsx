@@ -13,6 +13,7 @@ const BuyerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState({ text: "", icon: null });
   const [userName, setUserName] = useState("");
+  const [cars, setCars] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,6 +31,7 @@ const BuyerDashboard = () => {
         // Fetch cars
         const allCarsResponse = await getCars();
         const allCars = allCarsResponse.data;
+        setCars(allCars);
 
         // Recent cars
         const recent = allCars
@@ -105,11 +107,15 @@ const BuyerDashboard = () => {
             <p className="text-gray-500">Recently Applied Filters</p>
             <h2 className="text-2xl font-bold text-gray-900">N/A</h2>
           </div> */}
-          <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center">
-            <Car size={28} className="text-teal-700 mb-2" />
-            <p className="text-gray-500">Cars Available</p>
-            <h2 className="text-2xl font-bold text-gray-900">{recentCars.length + popularCars.length}</h2>
-          </div>
+         <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center">
+  <Car size={28} className="text-teal-700 mb-2" />
+  <p className="text-gray-500">Cars Available</p>
+  <h2 className="text-2xl font-bold text-gray-900">
+    {cars.filter((car) => car.status !== "sold" && car.status !== "reserved"
+).length}
+  </h2>
+</div>
+
         </div>
 
         {/* Recent Cars */}

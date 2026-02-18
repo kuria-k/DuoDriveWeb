@@ -83,6 +83,7 @@ const AuthForm = () => {
         sessionStorage.setItem("role", role);
       sessionStorage.setItem("authToken", userData.token);
       sessionStorage.setItem("userName", userData.username);
+      sessionStorage.setItem("userId", userData.id);
       sessionStorage.setItem("userEmail", userData.email);
       sessionStorage.setItem("userPhone", userData.phone_number);
         login(userData);

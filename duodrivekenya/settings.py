@@ -31,9 +31,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-# ALLOWED_HOSTS = []
-DEBUG = False
-ALLOWED_HOSTS = ['duodriveweb.onrender.com']
+ALLOWED_HOSTS = []
+DEBUG = True
+# ALLOWED_HOSTS = ['duodriveweb.onrender.com']
+# ALLOWED_HOSTS = [
+#     'duodriveweb.onrender.com',
+#     'localhost',
+#     '127.0.0.1',
+# ]
+
 
 # CORS_ALLOW_ALL_ORIGINS = True
 
@@ -119,10 +125,9 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
 }
 
