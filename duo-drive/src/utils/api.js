@@ -1,6 +1,6 @@
 import axios from "axios";
 //  "http://localhost:8000/api" ||
-const API_BASE_URL = 'https://duodrivemotors.vercel.app/api';
+const API_BASE_URL =  "http://localhost:8000/api";
 
 // Create an axios instance for reuse
 const api = axios.create({
