@@ -1,8 +1,19 @@
 import axios from "axios";
 //  "http://localhost:8000/api" ||
-const API_BASE_URL =  "http://localhost:8000/api";
+// const API_BASE_URL =  "http://localhost:8000/api";
 
-// Create an axios instance for reuse
+// // Create an axios instance for reuse
+// const api = axios.create({
+//   baseURL: API_BASE_URL,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+const API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://duodriveweb.onrender.com/api"
+    : "http://localhost:8000/api";
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

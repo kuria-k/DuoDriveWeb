@@ -31,7 +31,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["duodriveweb.onrender.com"]
 DEBUG = True
 # ALLOWED_HOSTS = ['duodriveweb.onrender.com']
 # ALLOWED_HOSTS = [
@@ -48,13 +49,18 @@ DEBUG = True
 # Add these lines:
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_ALL_ORIGINS = True  # or restrict to your frontend domain
+# CORS_ALLOW_ALL_ORIGINS = True
+#   # or restrict to your frontend domain
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+CORS_ALLOWED_ORIGINS = [
     "https://duodrivemotors.vercel.app",
+    "http://localhost:3000",
 ]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+#     "https://duodrivemotors.vercel.app",
+# ]
 
 
 # For development, you can also temporarily disable CSRF for specific origins
@@ -66,8 +72,7 @@ SESSION_COOKIE_SECURE = False
 
 # Add your production domain when deploying
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "https://duodrivemotors.vercel.app/",
+    "https://duodrivemotors.vercel.app",
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
